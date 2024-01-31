@@ -1,0 +1,4 @@
+django
+django-environ
+psycopg2
+psycopg
