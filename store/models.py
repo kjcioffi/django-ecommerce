@@ -7,7 +7,7 @@ class Product(models.Model):
     rating = models.IntegerField(validators=[MinValueValidator(0), MaxValueValidator(10)])
     price = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField()
-    image = models.ImageField(upload_to='products/', height_field=300, width_field=300)
+    image = models.ImageField(upload_to='products/')
 
 
 class Order(models.Model):
