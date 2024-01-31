@@ -29,3 +29,11 @@ class ProductModel(TestCase):
             self.product.full_clean()
         except ValidationError as e:
             self.assertNotIn('name', e.message_dict)
+
+    def test_name_rejects_empty_string(self):
+        self.product.name = ''
+
+        with self.assertRaises(ValidationError) as e:
+            self.product.full_clean()
+
+        self.assertIn('name', e.exception.message_dict)
