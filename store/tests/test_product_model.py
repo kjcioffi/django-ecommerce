@@ -11,5 +11,7 @@ class ProductModel(TestCase):
         letters = string.ascii_lowercase
         product = Product(name=''.join(random.choice(letters) for _ in range(101)))
         
-        with self.assertRaises(ValidationError):
+        with self.assertRaises(ValidationError) as full_clean:
             product.full_clean()
+
+        self.assertIn('name', full_clean.exception.message_dict)
