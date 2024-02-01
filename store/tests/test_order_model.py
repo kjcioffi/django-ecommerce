@@ -19,7 +19,9 @@ class OrderModel(TestCase):
             description='Description for Product 2',
         )
 
+        self.invalid_phone_number = '+1555-555-5555'
         self.valid_phone_number = '555-555-5555'
+        
         self.order = Order.objects.create(
             first_name='John',
             last_name='Doe',
@@ -31,17 +33,8 @@ class OrderModel(TestCase):
             state='State'
         )
 
-        self.invalid_phone_number = '+1555-555-5555'
-        self.invalid_order = Order.objects.create(
-            first_name='John',
-            last_name='Doe',
-            email='john@example.com',
-            phone_number=self.invalid_phone_number,
-            street='123 Main St',
-            zip='12345',
-            city='Cityville',
-            state='State'
-        )
+        self.phone_regex = r'^\d{3}-\d{3}-\d{4}$'
+        
 
     def test_add_products_to_order(self):
         self.order.products.add(self.product1, self.product2)
@@ -62,9 +55,8 @@ class OrderModel(TestCase):
         self.assertTrue(product_in_order.exists())
 
     def test_valid_phone_number(self):
-        phone_regex = r'^\d{3}-\d{3}-\d{4}$'
-        self.assertRegex(self.order.phone_number, phone_regex)
+        self.assertRegex(self.order.phone_number, self.phone_regex)
 
     def test_invalid_phone_number(self):
-        phone_regex = r'^\d{3}-\d{3}-\d{4}$'
-        self.assertNotRegex(self.invalid_order.phone_number, phone_regex)
+        self.order.phone_number = self.invalid_phone_number
+        self.assertNotRegex(self.order.phone_number, self.phone_regex)
