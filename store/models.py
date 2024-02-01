@@ -9,9 +9,11 @@ class Product(models.Model):
     description = models.TextField()
     image = models.ImageField(upload_to='products/')
 
+    def __str__(self):
+        return f"{self.name}"
 
 class Order(models.Model):
-    product = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
