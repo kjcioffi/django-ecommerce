@@ -20,7 +20,6 @@ class OrderModel(TestCase):
         )
 
         self.valid_phone_number = '555-555-5555'
-
         self.order = Order.objects.create(
             first_name='John',
             last_name='Doe',
