@@ -1,5 +1,4 @@
 from django.test import TestCase
-from phonenumber_field.phonenumber import PhoneNumber
 from store.models import Product, Order
 
 class OrderProduct(TestCase):
@@ -22,7 +21,7 @@ class OrderProduct(TestCase):
             first_name='John',
             last_name='Doe',
             email='john@example.com',
-            phone_number=PhoneNumber.from_string('+1234567890'),
+            phone_number='555-555-5555',
             street='123 Main St',
             zip='12345',
             city='Cityville',
@@ -47,4 +46,19 @@ class OrderProduct(TestCase):
         product_in_order = Order.objects.filter(products=self.product1)
         self.assertTrue(product_in_order.exists())
 
-    
+class Orders(TestCase):
+    def setup(self):
+        self.valid_phone_number ='555-555-5555'
+        self.order = Order.objects.create(
+            first_name='John',
+            last_name='Doe',
+            email='john@example.com',
+            phone_number=self.valid_phone_number,
+            street='123 Main St',
+            zip='12345',
+            city='Cityville',
+            state='State'
+        )
+
+    def test_valid_phone_number(self):
+
