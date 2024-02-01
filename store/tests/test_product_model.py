@@ -3,7 +3,6 @@ import string
 from decimal import Decimal
 from django.forms import ValidationError
 from django.test import TestCase
-from django.core.files.uploadedfile import SimpleUploadedFile
 
 from store.models import Product
 
