@@ -20,5 +20,6 @@ from store import views as store
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include(('store.urls', 'store'), namespace='store')),
     path("__debug__/", include("debug_toolbar.urls")),
 ]
