@@ -1,7 +1,9 @@
+from django.forms import ValidationError
 from django.test import TestCase
 from store.models import Product, Order
 
-class OrderProduct(TestCase):
+
+class OrderModel(TestCase):
     def setUp(self):
         self.product1 = Product.objects.create(
             name='Product 1',
@@ -17,11 +19,25 @@ class OrderProduct(TestCase):
             description='Description for Product 2',
         )
 
+        self.valid_phone_number = '555-555-5555'
+
         self.order = Order.objects.create(
             first_name='John',
             last_name='Doe',
             email='john@example.com',
-            phone_number='555-555-5555',
+            phone_number=self.valid_phone_number,
+            street='123 Main St',
+            zip='12345',
+            city='Cityville',
+            state='State'
+        )
+
+        self.invalid_phone_number = '+1555-555-5555'
+        self.invalid_order = Order.objects.create(
+            first_name='John',
+            last_name='Doe',
+            email='john@example.com',
+            phone_number=self.invalid_phone_number,
             street='123 Main St',
             zip='12345',
             city='Cityville',
@@ -46,19 +62,10 @@ class OrderProduct(TestCase):
         product_in_order = Order.objects.filter(products=self.product1)
         self.assertTrue(product_in_order.exists())
 
-class Orders(TestCase):
-    def setup(self):
-        self.valid_phone_number ='555-555-5555'
-        self.order = Order.objects.create(
-            first_name='John',
-            last_name='Doe',
-            email='john@example.com',
-            phone_number=self.valid_phone_number,
-            street='123 Main St',
-            zip='12345',
-            city='Cityville',
-            state='State'
-        )
-
     def test_valid_phone_number(self):
+        phone_regex = r'^\d{3}-\d{3}-\d{4}$'
+        self.assertRegex(self.order.phone_number, phone_regex)
 
+    def test_invalid_phone_number(self):
+        phone_regex = r'^\d{3}-\d{3}-\d{4}$'
+        self.assertNotRegex(self.invalid_order.phone_number, phone_regex)
