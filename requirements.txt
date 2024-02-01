@@ -3,5 +3,4 @@ django-environ
 psycopg2
 psycopg
 django-debug-toolbar
-django-phonenumber-field
 pillow
