@@ -53,7 +53,7 @@ class ProductModel(TestCase):
         except ValidationError as e:
             self.assertNotIn('rating', e.message_dict)
 
-    def test_rating_rejects_non_integer_numbers(self):
+    def test_rating_rejects_non_integers(self):
         self.product.rating = 'Bad rating'
 
         with self.assertRaises(ValidationError) as e:
