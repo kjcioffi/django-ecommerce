@@ -3,13 +3,14 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" href="{% static 'store/base.css' %}">
+        {% block stylesheet %}{% endblock %}
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>ContempoCrafts</title>
     </head>
     <body>
         <nav class="menu">
             <a href="{% url 'store:index' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
-            <strong>ContempoCrafts</strong>
+            <aside>ContempoCrafts</aside>
             <a href="{% url 'store:index' %}">About Us</a>
             <a href="{% url 'store:index' %}"><img id="bag" src="{% static 'store/images/shopping_bag.png' %}"></a>
         </nav>

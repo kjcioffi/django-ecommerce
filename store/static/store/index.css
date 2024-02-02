@@ -1,0 +1,17 @@
+.products {
+    display: grid;
+    grid-template: repeat(2, 1fr) / repeat(2, 1fr);
+    gap: 20px;
+    padding-inline: 40px;
+    padding-block: 40px;
+}
+
+.product {
+    margin-block-end: 100px;
+    text-align: center;
+}
+
+.product img {
+    width: 100%;
+    height: auto;
+}

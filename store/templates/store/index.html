@@ -1,5 +1,19 @@
 {% extends "store/base.html" %}
+{% load static %}
+
+    {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/index.css' %}">{% endblock %}
 
 {% block content %}
-    
+    <section class="products">
+    {% for product in product_list %}
+            <section class="product">
+                <img src="{{ product.image.url }}" alt="{{ product.name }}">
+                <div class="product-info">
+                    <h2 class="product-name">{{ product.name }}</h2>
+                    <p class="product-rating">Rating: {{ product.rating }}/10</p>
+                </div>
+                <button>Add To Cart</button>
+            </section>
+    {% endfor %}
+    </section>
 {% endblock %}
