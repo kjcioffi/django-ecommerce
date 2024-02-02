@@ -1,5 +1,4 @@
 from django.db.models.query import QuerySet
-from django.shortcuts import render
 from django.views.generic.list import ListView
 
 from store.models import Product
