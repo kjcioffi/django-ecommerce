@@ -1,4 +1,13 @@
+from django.db.models.query import QuerySet
 from django.shortcuts import render
+from django.views.generic.list import ListView
 
-def index(request):
-    return render(request, 'store/index.html', {})
+from store.models import Product
+
+class Index(ListView):
+    model = Product
+    context_object_name = "product_list"
+    template_name = 'store/index.html'
+
+    def get_queryset(self) -> QuerySet[Product]:
+        return super().get_queryset()[:6]
