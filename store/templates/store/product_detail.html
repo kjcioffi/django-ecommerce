@@ -1,0 +1,18 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+    {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/product_detail.css' %}">{% endblock %}
+
+{% block content %}
+    <section class="product">
+        <img src="{{ product.image.url }}">
+        <div class="product-details">
+            <h1 id="name">{{ product.name }}</h1>
+            <p id="price">From ${{ product.price }}</p>
+            <p id="description">{{ product.description }}</p>
+            <br>
+            <p id="rating">Rating: {{ product.rating }}/10</p>
+        </div>
+    </section>
+    <button id="add-to-bag">Add To Bag</button>
+{% endblock %}

@@ -1,0 +1,26 @@
+.product {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-inline: 1.5rem;
+    margin-block-end: 1.5rem;
+}
+
+.product img {
+    inline-size: 100%;
+    block-size: auto;
+}
+
+.product-details {
+    padding-inline-start: 10px;
+}
+
+#add-to-bag {
+    display: block;
+    font-size: x-large;
+    block-size: 5rem;
+    inline-size: 75%;
+    margin-inline: auto;
+    margin-block-end: 1.5rem;
+    border-radius: 2.5rem;
+    cursor: pointer;
+}
