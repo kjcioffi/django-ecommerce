@@ -10,6 +10,7 @@ body {
     align-items: center;
     border-block-end: 2.5px solid black;
     padding-block-end: 2.5px;
+    margin-block-end: 20px;
 }
 
 #logo, #bag {
