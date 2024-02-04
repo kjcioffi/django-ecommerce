@@ -21,4 +21,17 @@ class ProductDetail(DetailView):
 
 @require_http_methods(["POST"])
 def add_to_bag(request):
+    product_id = request.POST.get("product_id")
+
+    bag = request.session.get('bag', [])
+
+    for product in bag:
+        if product['product_id'] == product_id:
+            product['quantity'] += 1
+            break
+    else:
+        bag.append({'product_id': product_id, 'quantity': 1})
+
+    request.session['bag'] = bag
+    
     return JsonResponse({'status': 'success'})
