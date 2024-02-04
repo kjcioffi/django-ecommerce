@@ -1,4 +1,14 @@
-class BagSystem {
+/**
+ * ApiUtil Class
+ * 
+ * This class assists Django in adding products to a user's shopping bag \
+ * by communicating with Django's backend to store and process product information.
+ *
+ * Usage:
+ * The class automatically binds click event listeners to elements with the 
+ * 'add-to-bag' ID and handles the subsequent POST requests to the Django server.
+ */
+class ApiUtil {
     constructor() {
         this._addToBagBtn = document.querySelectorAll('#add-to-bag');
         this._addToBagBtn.forEach(button => button.addEventListener('click', () => {
@@ -13,20 +23,29 @@ class BagSystem {
      * @param {string} product_id 
      */
     async sendProductIdToDjango(product_id) {
-        await fetch('/add-to-bag/', {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": this.getCookie('csrftoken'),
-                "Content-Type": 'application/x-www-form-urlencoded' 
-            },
-            body: 'product_id=' + product_id
-        })
-        .then(response => response.json())
-        .then(data => {
+        try {
+            const response = await fetch('/add-to-bag/', {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": this.getCookie('csrftoken'),
+                    "Content-Type": 'application/x-www-form-urlencoded' 
+                },
+                body: 'product_id=' + product_id
+            });
+
+            if (!response.ok) {
+                throw new Error(`Http error! status: ${response.status}`)
+            }
+
+            const data = await response.json();
             if (data.status === 'success') {
                 console.log('Success!');
+            } else {
+                console.error('Error with request: ', data);
             }
-        });
+        } catch(error) {
+            console.error('There was a problem with the fetch operation: ', error.message);
+        }
     };
 
     /**
@@ -53,4 +72,4 @@ class BagSystem {
     };
 }
 
-new BagSystem();
+new ApiUtil();
