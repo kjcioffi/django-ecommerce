@@ -1,6 +1,8 @@
 from django.db.models.query import QuerySet
+from django.http import JsonResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.decorators.http import require_http_methods
 
 from store.models import Product
 
@@ -16,3 +18,7 @@ class ProductDetail(DetailView):
     model = Product
     context_object_name = "product"
     template_name = 'store/product_detail.html'
+
+@require_http_methods(["POST"])
+def add_to_bag(request):
+    return JsonResponse({'status': 'success'})
