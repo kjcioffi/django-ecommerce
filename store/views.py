@@ -33,5 +33,8 @@ def add_to_bag(request):
         bag.append({'product_id': product_id, 'quantity': 1})
 
     request.session['bag'] = bag
+
+    total_items = sum(item['quantity'] for item in request.session['bag'])
+    request.session['total_items'] = total_items
     
-    return JsonResponse({'status': 'success'})
+    return JsonResponse({'status': 'success', 'total_items': total_items})
