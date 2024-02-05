@@ -19,8 +19,14 @@ class ProductDetail(DetailView):
     context_object_name = "product"
     template_name = 'store/product_detail.html'
 
+
 @require_http_methods(["POST"])
-def add_to_bag(request):
+def add_to_bag(request) -> JsonResponse:
+    """
+    Process information from client-side interactions.
+
+    Keeps count of the product itself and total quantity of each.
+    """
     product_id = request.POST.get("product_id")
 
     bag = request.session.get('bag', [])
