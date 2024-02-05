@@ -13,19 +13,19 @@ class Index(ListView):
 
     def get_queryset(self) -> QuerySet[Product]:
         return super().get_queryset()[:6]
-    
+
 class ProductDetail(DetailView):
     model = Product
     context_object_name = "product"
     template_name = 'store/product_detail.html'
 
-
 @require_http_methods(["POST"])
 def add_to_bag(request) -> JsonResponse:
     """
-    Process information from client-side interactions.
+    Process information from client-side interactions then \
+    send the total number of items in the bag.
 
-    Keeps count of the product itself and total quantity of each.
+    Keeps count of different products added and their quantities.
     """
     product_id = request.POST.get("product_id")
 
