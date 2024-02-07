@@ -28,6 +28,10 @@ def add_to_bag(request) -> JsonResponse:
     Keeps count of different products added and their quantities.
     """
     product_id = int(request.POST.get("product_id"))
+
+    if not isinstance(product_id, int):
+        raise TypeError("Product ID must be an integer.")
+
     bag: list = request.session.get('bag', [])
 
     if len(bag) == 0:
