@@ -34,7 +34,14 @@ def add_to_bag(request) -> JsonResponse:
 
     bag: list = request.session.get('bag', [])
 
-    if len(bag) == 0:
+    product_found = False
+    for product in bag:
+        if product['product_id'] == product_id:
+            product['quantity'] += 1
+            product_found = True
+            break
+    
+    if not product_found:
         bag.append({'product_id': product_id, 'quantity': 1})
 
     request.session['bag'] = bag
