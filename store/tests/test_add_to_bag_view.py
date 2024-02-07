@@ -1,4 +1,4 @@
-from django.http import HttpRequest
+from django.http import HttpRequest, JsonResponse
 from django.test import Client, TestCase, RequestFactory
 from django.contrib.sessions.backends.db import SessionStore
 from django.urls import reverse
@@ -28,11 +28,11 @@ class AddToBagView(TestCase):
         session['bag'] = [{'product_id': 1, 'quantity': 1}]
         session.save()
 
-        response = self.client.post(reverse('store:add-to-bag'), {'product_id': 1})
+        response: JsonResponse = self.client.post(reverse('store:add-to-bag'), {'product_id': 1})
         self.assertEqual(response.status_code, 200)
 
-        bag = self.client.session['bag'] # Fetch the updated session data
-        product_in_bag = next((item for item in bag if item['product_id'] == 1), None)
+        bag: list = self.client.session['bag'] # Fetch the updated session data
+        product_in_bag: dict = next((item for item in bag if item['product_id'] == 1), None)
 
         self.assertIsNotNone(product_in_bag, 'The product should exist in the bag')
         self.assertEqual(product_in_bag['quantity'], 2, "The quantity for this product should've been incremented.")
