@@ -70,6 +70,8 @@ class ShoppingBagUtil {
     };
 
     updateBagQuantity(payload) {
+        // TO-DO: fix caching issue that causes the previous known \
+        // quantity to appear on the page due to back button clicks.
         const bagQuantityElement = document.querySelector('.bag-quantity');
         bagQuantityElement.textContent = payload.toString();
     }
