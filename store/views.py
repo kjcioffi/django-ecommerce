@@ -27,20 +27,15 @@ def add_to_bag(request) -> JsonResponse:
 
     Keeps count of different products added and their quantities.
     """
-    product_id = request.POST.get("product_id")
+    product_id = int(request.POST.get("product_id"))
+    bag: list = request.session.get('bag', [])
 
-    bag = request.session.get('bag', [])
-
-    for product in bag:
-        if product['product_id'] == product_id:
-            product['quantity'] += 1
-            break
-    else:
+    if len(bag) == 0:
         bag.append({'product_id': product_id, 'quantity': 1})
 
     request.session['bag'] = bag
 
-    total_items = sum(item['quantity'] for item in request.session['bag'])
+    total_items = sum(product['quantity'] for product in bag)
     request.session['total_items'] = total_items
-    
+
     return JsonResponse({'status': 'success', 'total_items': total_items})
