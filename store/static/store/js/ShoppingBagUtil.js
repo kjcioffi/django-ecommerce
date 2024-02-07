@@ -1,14 +1,12 @@
 /**
- * ApiUtil Class
- * 
- * This class assists Django in adding products to a user's shopping bag \
+ * Assists Django in adding products to a user's shopping bag \
  * by communicating with Django's backend to store and process product information.
  *
  * Usage:
  * The class automatically binds click event listeners to elements with the 
  * 'add-to-bag' ID and handles the subsequent POST requests to the Django server.
  */
-class ApiUtil {
+class ShoppingBagUtil {
     constructor() {
         this._addToBagBtn = document.querySelectorAll('#add-to-bag');
         this._addToBagBtn.forEach(button => button.addEventListener('click', () => {
@@ -39,7 +37,7 @@ class ApiUtil {
 
             const data = await response.json();
             if (data.status === 'success') {
-                console.log('Success!');
+                this.updateBagQuantity(data.total_items);
             } else {
                 console.error('Error with request: ', data);
             }
@@ -52,7 +50,7 @@ class ApiUtil {
      * Retrieves cookies from the browser.
      * Credit to the Django documentation for this method.
      * https://docs.djangoproject.com/en/5.0/howto/csrf/#acquiring-the-token-if-csrf-use-sessions-and-csrf-cookie-httponly-are-false
-     * TO-DO: simply this by using the js-cookie library via NPM.
+     * TO-DO: simplify this by using the js-cookie library via NPM.
      * @param {string} name 
      * @returns
      */
@@ -70,6 +68,11 @@ class ApiUtil {
         }
         return cookieValue;
     };
+
+    updateBagQuantity(payload) {
+        const bagQuantityElement = document.querySelector('.bag-quantity');
+        bagQuantityElement.textContent = payload.toString();
+    }
 }
 
-new ApiUtil();
+new ShoppingBagUtil();

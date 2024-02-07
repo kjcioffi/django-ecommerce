@@ -6,18 +6,18 @@
 {% block content %}
     <main class="products">
     {% for product in product_list %}
-            <section class="product">
-                <a href="{% url 'store:product' pk=product.pk %}"><img src="{{ product.image.url }}" alt="{{ product.name }}"></a>
-                <div class="product-info">
-                    <h2 class="product-name">{{ product.name }}</h2>
-                    <p class="product-rating">Rating: {{ product.rating }}/10</p>
-                </div>
-                <button id="add-to-bag" product-id="{{ product.id }}">Add To Bag</button>
-            </section>
+        <section class="product">
+            <a href="{% url 'store:product' pk=product.pk %}"><img src="{{ product.image.url }}" alt="{{ product.name }}"></a>
+            <div class="product-info">
+                <h2 class="product-name">{{ product.name }}</h2>
+                <p class="product-rating">Rating: {{ product.rating }}/10</p>
+            </div>
+            <button id="add-to-bag" product-id="{{ product.id }}">Add To Bag</button>
+        </section>
     {% endfor %}
     </main>
 {% endblock %}
 
 {% block scripts %}
-<script src="{% static 'store/js/ApiUtil.js' %}"></script>
+    <script src="{% static 'store/js/ShoppingBagUtil.js' %}"></script>
 {% endblock %}
