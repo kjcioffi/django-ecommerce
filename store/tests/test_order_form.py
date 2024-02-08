@@ -14,11 +14,11 @@ class TestOrderForm(TestCase):
     def test_order_form_invalid(self):
         self.form_data['last_name'] = ''
         form = OrderForm(self.form_data)
-        self.assertFalse(form.is_valid())
+        self.assertFalse(form.is_valid(), "The form should be invalid.")
 
     def test_order_form_valid(self):
         form = OrderForm(self.form_data)
-        self.assertTrue(form.is_valid())
+        self.assertTrue(form.is_valid(), "The form should be valid.")
     
     def test_phone_number_field_invalid(self):
         self.form_data['phone_number'] = '(555) 555-5555'
