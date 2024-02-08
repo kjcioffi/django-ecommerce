@@ -3,6 +3,7 @@ from django.forms import ValidationError
 from django.test import TestCase
 
 from store.forms import OrderForm
+from store.models import Order
 
 class TestOrderForm(TestCase):
     def setUp(self):
@@ -23,3 +24,9 @@ class TestOrderForm(TestCase):
         self.form_data['phone_number'] = '(555) 555-5555'
         form = OrderForm(self.form_data)
         self.assertFormError(form, 'phone_number', 'Please use XXX-XXX-XXXX format.')
+
+    def test_order_form_save(self):
+        form = OrderForm(self.form_data)
+        self.assertTrue(form.is_valid(), 'The form should be valid.')
+        model_object = form.save()
+        self.assertTrue(Order.objects.filter(pk=model_object.pk).exists(), 'The order object should exist in the database after saving.')
