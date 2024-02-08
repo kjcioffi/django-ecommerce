@@ -14,3 +14,7 @@ class TestOrderForm(TestCase):
         self.form_data['last_name'] = ''
         form = OrderForm(self.form_data)
         self.assertFalse(form.is_valid())
+
+    def test_order_form_valid(self):
+        form = OrderForm(self.form_data)
+        self.assertTrue(form.is_valid())
