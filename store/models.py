@@ -14,7 +14,7 @@ class Product(models.Model):
 
 
 class Order(models.Model):
-    products = models.ManyToManyField(Product)
+    products = models.ManyToManyField(Product, through="OrderItem")
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -25,4 +25,13 @@ class Order(models.Model):
     state = models.CharField(max_length=25)
 
     def __str__(self):
-        return f"Order for {self.first_name} {self.last_name}"
+        return f"Order #{self.id}"
+    
+
+class OrderItem(models.Model):
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1, validators=[MinValueValidator(1)])
+
+    def __str__(self):
+        return f"{self.quantity} of {self.product.name} in {self.order}"
