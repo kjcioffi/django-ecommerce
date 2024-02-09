@@ -63,8 +63,8 @@ class TestOrderForm(TestCase):
         expected_product_ids: list = [item['product_id'] for item in bag]
         actual_product_ids: list = [product.id for product in order.products.all()]
 
-        self.assertTrue(all(product_id in expected_product_ids for product_id in actual_product_ids))
-        self.assertEqual(len(bag), order.products.count())
+        self.assertTrue(all(product_id in expected_product_ids for product_id in actual_product_ids), 'All products from the bag should be in the order.')
+        self.assertEqual(len(bag), order.products.count(), 'All products from the bag should be in the order.')
 
 
     def create_products(self, number: int):
