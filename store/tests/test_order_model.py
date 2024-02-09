@@ -1,4 +1,4 @@
-from django.forms import ValidationError
+from decimal import Decimal
 from django.test import TestCase
 from store.models import Product, Order
 
@@ -34,24 +34,31 @@ class OrderModel(TestCase):
         )
 
         self.phone_regex = r'^\d{3}-\d{3}-\d{4}$'
+
+        self.products = self.create_products(10)
+        self.bag = [{'product_id': product.id, 'quantity': 1} for product in self.products]
+
+        self.client.session['bag'] = self.bag
+        self.client.session.save()
         
-
     def test_add_products_to_order(self):
-        self.order.products.add(self.product1, self.product2)
-
-        self.assertIn(self.product1, self.order.products.all())
-        self.assertIn(self.product2, self.order.products.all())
+        for product in self.products:
+            self.order.products.add(product)
+            self.assertIn(product, self.order.products.all())
 
     def test_remove_products_to_order(self):
-        self.order.products.add(self.product1, self.product2)
-        self.order.products.remove(self.product1)
-
-        self.assertIn(self.product2, self.order.products.all())
+        for product in self.products:
+            self.order.products.add(product)
+ 
+        product_to_be_removed = self.order.products.get(name__icontains="0")
+        self.order.products.remove(product_to_be_removed)
+        self.assertNotIn(product_to_be_removed, self.order.products.all())
 
     def test_query_products_in_order(self):
-        self.order.products.add(self.product1, self.product2)
+        for product in self.products:
+            self.order.products.add(product)
 
-        product_in_order = Order.objects.filter(products=self.product1)
+        product_in_order = Order.objects.filter(products__name__icontains="3")
         self.assertTrue(product_in_order.exists())
 
     def test_valid_phone_number(self):
@@ -60,3 +67,27 @@ class OrderModel(TestCase):
     def test_invalid_phone_number(self):
         self.order.phone_number = self.invalid_phone_number
         self.assertNotRegex(self.order.phone_number, self.phone_regex)
+
+    def test_products_associated_with_order(self):
+        """
+        Test that products added to a simulated bag are correctly associated with an order.    
+        """
+        for item in self.bag:
+            product = Product.objects.get(id=int(item['product_id']))
+            self.order.products.add(product)
+
+        for item in self.bag:
+            self.assertTrue(self.order.products.filter(id=int(item['product_id'])).exists(), f"Product {item['product_id']} should associated with this order.")
+
+        self.assertEqual(len(self.bag), self.order.products.count(), "The number of products in this order should match the bag's contents")
+    
+    def create_products(self, quantity: int):
+        products = []
+        for i in range(quantity):
+            product = Product.objects.create(
+                name=f"Product {i}",
+                rating=0,
+                price=Decimal('10.99'),
+                description="Test")
+            products.append(product)
+        return products
