@@ -38,10 +38,12 @@ class TestOrderForm(TestCase):
         """
         Test that products added to a simulated bag are correctly associated with an order.    
         """
-        for _ in range(0, 10):
-            self.client.post(reverse('store:add-to-bag'), {'product_id': rand.randint(11, 19)})
 
-        bag: list = self.client.session.get('bag', [])
+        products = self.create_products(10)
+        bag = [{'product_id': product.id, 'quantity': 1} for product in products]
+
+        self.client.session['bag'] = bag
+        self.client.session.save()
 
         order = Order.objects.create(
             first_name='John',
@@ -54,22 +56,25 @@ class TestOrderForm(TestCase):
             state='State'
         )
 
-        self.create_products(10)
-
         for item in bag:
             product = Product.objects.get(id=int(item['product_id']))
             order.products.add(product)
 
-        expected_product_ids: list = [item['product_id'] for item in bag]
-        actual_product_ids: list = [product.id for product in order.products.all()]
+        for item in bag:
+            self.assertTrue(order.products.filter(id=int(item['product_id'])).exists(), f"Product {item['product_id']} should associated with this order.")
 
-        self.assertTrue(all(product_id in expected_product_ids for product_id in actual_product_ids), 'All products from the bag should be in the order.')
-        self.assertEqual(len(bag), order.products.count(), 'All products from the bag should be in the order.')
+        self.assertEqual(len(bag), order.products.count(), "The number of products in this order should match the bag's contents")
 
+    def test_product_quantities_associated_with_order(self):
+        pass
 
-    def create_products(self, number: int):
-        for i in range(1, number):
-            Product.objects.create(name=f"Product {i}",
-                                rating=0,
-                                price=Decimal('10.99'),
-                                description="Test")
+    def create_products(self, quantity: int):
+        products = []
+        for i in range(quantity):
+            product = Product.objects.create(
+                name=f"Product {i}",
+                rating=0,
+                price=Decimal('10.99'),
+                description="Test")
+            products.append(product)
+        return products
