@@ -3,22 +3,8 @@ from django.test import TestCase
 from store.models import Product, Order
 
 
-class OrderModel(TestCase):
+class TestOrderModel(TestCase):
     def setUp(self):
-        self.product1 = Product.objects.create(
-            name='Product 1',
-            rating=8,
-            price=19.99,
-            description='Description for Product 1'
-        )
-
-        self.product2 = Product.objects.create(
-            name='Product 2',
-            rating=7,
-            price=15.99,
-            description='Description for Product 2',
-        )
-
         self.invalid_phone_number = '+1555-555-5555'
         self.valid_phone_number = '555-555-5555'
         
