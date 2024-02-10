@@ -1,8 +1,11 @@
 from django.db.models.query import QuerySet
 from django.http import JsonResponse
+from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
+from django.views.generic.edit import CreateView
 from django.views.decorators.http import require_http_methods
+from store.forms import OrderForm
 
 from store.models import Product
 
@@ -18,6 +21,13 @@ class ProductDetail(DetailView):
     model = Product
     context_object_name = "product"
     template_name = 'store/product_detail.html'
+
+
+class Checkout(CreateView):
+    form_class = OrderForm
+    template_name = 'store/checkout.html'
+    success_url = reverse_lazy('store:index')
+
 
 @require_http_methods(["POST"])
 def add_to_bag(request) -> JsonResponse:
