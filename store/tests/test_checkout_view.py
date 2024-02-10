@@ -1,6 +1,8 @@
 from django.test import Client, TestCase
 from django.urls import reverse
 
+from store.models import Order
+
 
 class TestCheckoutView(TestCase):
     def setUp(self):
@@ -19,4 +21,10 @@ class TestCheckoutView(TestCase):
         self.assertEqual(response.status_code, 200)
         form = response.context['form']
         self.assertTrue(form)
+
+    def test_form_submit_success(self):
+        response = self.client.post(reverse('store:checkout'), self.form_data)
+        self.assertEqual(response.status_code, 302)
+        saved_order = Order.objects.filter(first_name="Michael", last_name="Dillon")
+        self.assertTrue(saved_order.exists())
         
