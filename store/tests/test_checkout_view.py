@@ -31,17 +31,24 @@ class TestCheckoutView(TestCase):
     def test_form_submit_fails_with_field_errors(self):
         bad_form_data = {"first_name": "",
                             "last_name": "",
-                            "email": "michael@hotmail.com",
-                            "phone_number": "(875) 844-6600",
-                            "street": "7762 Newman Flats Suite 388",
-                            "zip": "24306",
-                            "city": "New Cindychester",
-                            "state": "Pennsylvania"}
+                            "email": "",
+                            "phone_number": "",
+                            "street": "",
+                            "zip": "",
+                            "city": "",
+                            "state": ""}
         
         response = self.client.post(reverse('store:checkout'), bad_form_data)
         form = response.context['form']
 
         self.assertFormError(form, 'first_name', 'This field is required.')
         self.assertFormError(form, 'last_name', 'This field is required.')
-        self.assertFormError(form, 'phone_number', 'Please use XXX-XXX-XXXX format.')
-        
+        self.assertFormError(form, 'street', 'This field is required.')
+        self.assertFormError(form, 'zip', 'This field is required.')
+        self.assertFormError(form, 'city', 'This field is required.')
+        self.assertFormError(form, 'state', 'This field is required.')
+
+        if bad_form_data['phone_number'] == "":
+            self.assertFormError(form, 'phone_number', 'This field is required.')
+        else:
+            self.assertFormError(form, 'phone_number', 'Please use XXX-XXX-XXXX format.')
