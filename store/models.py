@@ -35,3 +35,7 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.product.name} in {self.order}"
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)

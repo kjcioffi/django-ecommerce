@@ -1,10 +1,12 @@
 from decimal import Decimal
+from django.forms import ValidationError
 from django.test import TestCase
 
 from django.db.models import Q
 
 from store.models import Order, OrderItem, Product
 
+import random
 
 
 class TestOrderItem(TestCase):
@@ -47,7 +49,15 @@ class TestOrderItem(TestCase):
                     Q(id=product_id) & Q(orderitem__quantity=quantity)
                 ).distinct()
             self.assertEqual(matching_item.count(), 1, f"Expected exactly one instance of product {matching_item} with quantity {quantity} in the order")
-    
+
+    def test_product_quantity_cannot_be_zero(self):
+        bag = [{'product_id': product.id, 'quantity': 0} for product in self.products]
+        
+        for item in bag:
+            with self.assertRaises(ValidationError):
+                product = Product.objects.get(id=int(item['product_id']))
+                OrderItem.objects.create(order=self.order, product=product, quantity=item['quantity'])
+
     def create_products(self, quantity: int):
         products = []
         for i in range(quantity):
