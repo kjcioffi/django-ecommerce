@@ -1,1 +1,16 @@
-{{ form }}
+{% extends 'store/base.html' %}
+{% load static %}
+
+    {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/checkout.css' %}">{% endblock %}
+
+{% block content %}
+    <main>
+        <form id="order-form" method="POST">
+            {% csrf_token %}
+            <strong>Contact and Shipping Information</strong>
+            {{form}}
+            <button id="place-order" type="submit">Place Order</button>
+        </form>
+        <aside></aside>
+    </main>
+{% endblock %}

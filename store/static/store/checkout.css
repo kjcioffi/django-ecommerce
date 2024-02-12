@@ -1,0 +1,19 @@
+main {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    padding-inline: 40px;
+    padding-block: 40px;
+}
+
+#order-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+#order-form > * {
+    margin-block-end: 1.5rem;
+    justify-content: center;
+}
+
