@@ -1,9 +1,9 @@
 from django.db.models.query import QuerySet
 from django.http import JsonResponse
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView
 from django.views.decorators.http import require_http_methods
 from store.forms import OrderForm
 
@@ -22,12 +22,29 @@ class ProductDetail(DetailView):
     context_object_name = "product"
     template_name = 'store/product_detail.html'
 
+def checkout(request):
+    products_in_bag = Product.objects.filter(id__in=get_products_from_bag(request))
 
-class Checkout(CreateView):
-    form_class = OrderForm
-    template_name = 'store/checkout.html'
-    success_url = reverse_lazy('store:index')
+    if request.method == "POST":
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('store:index')
+    else:
+        form = OrderForm()
 
+    return render(request, 'store/checkout.html', {'form': form, 'products_in_bag': products_in_bag})
+
+
+def get_products_from_bag(request):
+    product_ids = []
+    if 'bag' in request.session:
+        for product in request.session['bag']:
+            product_ids.append(product['product_id'])
+        return product_ids
+    else:
+        return []
+        
 
 @require_http_methods(["POST"])
 def add_to_bag(request) -> JsonResponse:
