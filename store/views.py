@@ -38,7 +38,12 @@ def get_products_and_quantities_from_bag(request):
     products = []
     if 'bag' in request.session:
         for product in request.session['bag']:
-            products.append({'product': Product.objects.get(id=product['product_id']), 'quantity': product['quantity']})
+            product_instance = Product.objects.get(id=product['product_id'])
+            products.append({
+                'product': product_instance,
+                'quantity': product['quantity'],
+                'image': product_instance.image.url
+                })
         return products
     else:
         return products

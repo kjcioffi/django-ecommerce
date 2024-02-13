@@ -1,11 +1,13 @@
 main {
     display: grid;
-    grid-template-columns: 2fr 1fr;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
     padding-inline: 40px;
     padding-block: 40px;
 }
 
 #order-form {
+    font-size: large;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -17,3 +19,21 @@ main {
     justify-content: center;
 }
 
+#bag-contents aside {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#bag-contents h1 {
+    text-align: center;
+    margin-block-end: 2.5rem;
+}
+
+#bag-contents aside img {
+    text-align: center;
+    justify-items: center;
+    inline-size: 150px;
+    block-size: auto;
+    margin-block-end: 2rem;
+    border-radius: 2rem;
+}

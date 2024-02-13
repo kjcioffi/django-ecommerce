@@ -4,13 +4,28 @@
     {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/checkout.css' %}">{% endblock %}
 
 {% block content %}
-    <main>
-        <form id="order-form" method="POST">
-            {% csrf_token %}
-            <strong>Contact and Shipping Information</strong>
-            {{form}}
-            <button id="place-order" type="submit">Place Order</button>
-        </form>
-        <aside></aside>
-    </main>
+    {% if products_in_bag %}    
+        <main>
+            <form id="order-form" method="POST">
+                {% csrf_token %}
+                <strong>Contact and Shipping Information</strong>
+                {{ form }}
+                <button id="place-order" type="submit">Place Order</button>
+            </form>
+            <section id="bag-contents">
+                <h1>Bag Contents</h1>
+                <aside>
+                    {% for bag_item in products_in_bag %}
+                        <img src="{{ bag_item.image }}">
+                        <section id="product-details">
+                            <p>{{ bag_item.product.name }}</p>
+                            <p>{{ bag_item.quantity}} x ${{ bag_item.product.price }}</p>
+                        </section>
+                    {% endfor %}
+                </aside>
+            </section>
+        </main>
+    {% else %}
+        <h1>Your bag is empty</h1>
+    {% endif %}
 {% endblock %}
