@@ -1,12 +1,21 @@
+import random
 from django.test import Client, TestCase
 from django.urls import reverse
 
 from store.models import Order
+from store.tests.utils import create_products
 
 
 class TestCheckoutView(TestCase):
     def setUp(self):
         self.client = Client()
+
+        self.products = create_products(10)
+
+        self.session = self.client.session
+        self.session['bag'] = [{'product_id': product.id, 'quantity': random.randint(0, 10)} for product in self.products]
+        self.session.save()
+
         self.form_data = {"first_name": "Michael",
                             "last_name": "Dillon",
                             "email": "donald74@hotmail.com",
@@ -52,3 +61,16 @@ class TestCheckoutView(TestCase):
             self.assertFormError(form, 'phone_number', 'This field is required.')
         else:
             self.assertFormError(form, 'phone_number', 'Please use XXX-XXX-XXXX format.')
+
+    def test_quantities_in_context_match_up_with_session(self):
+        response = self.client.get(reverse('store:checkout'))
+        self.assertEqual(response.status_code, 200)
+
+        session_bag_product_quantities: dict = {item['product_id']: item['quantity'] for item in self.session['bag']}
+
+        for product_in_context in response.context['products_in_bag']:
+            product_id = product_in_context['product'].id
+            product_quantity = product_in_context['quantity']
+
+            self.assertIn(product_id, session_bag_product_quantities, f"Product ID {product_id} wasn't found in bag items.")
+            self.assertEqual(product_quantity, session_bag_product_quantities[product_id])
