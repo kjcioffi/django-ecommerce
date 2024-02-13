@@ -1,6 +1,7 @@
 # files
 *.pyc
 .env
+media/products/test_image*.jpeg
 
 # directories
 .venv

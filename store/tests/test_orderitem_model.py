@@ -8,10 +8,12 @@ from store.models import Order, OrderItem, Product
 
 import random
 
+from store.tests.utils import create_products
+
 
 class TestOrderItem(TestCase):
     def setUp(self):
-        self.products = self.create_products(10)
+        self.products = create_products(10)
         self.bag = [{'product_id': product.id, 'quantity': 1} for product in self.products]
 
         self.client.session['bag'] = self.bag
@@ -57,14 +59,3 @@ class TestOrderItem(TestCase):
             with self.assertRaises(ValidationError):
                 product = Product.objects.get(id=int(item['product_id']))
                 OrderItem.objects.create(order=self.order, product=product, quantity=item['quantity'])
-
-    def create_products(self, quantity: int):
-        products = []
-        for i in range(quantity):
-            product = Product.objects.create(
-                name=f"Product {i}",
-                rating=0,
-                price=Decimal('10.99'),
-                description="Test")
-            products.append(product)
-        return products

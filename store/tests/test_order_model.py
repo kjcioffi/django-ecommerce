@@ -1,6 +1,7 @@
 from decimal import Decimal
 from django.test import TestCase
 from store.models import Product, Order
+from store.tests.utils import create_products
 
 
 class TestOrderModel(TestCase):
@@ -21,7 +22,7 @@ class TestOrderModel(TestCase):
 
         self.phone_regex = r'^\d{3}-\d{3}-\d{4}$'
 
-        self.products = self.create_products(10)
+        self.products = create_products(10)
         self.bag = [{'product_id': product.id, 'quantity': 1} for product in self.products]
 
         self.client.session['bag'] = self.bag
@@ -66,14 +67,3 @@ class TestOrderModel(TestCase):
             self.assertTrue(self.order.products.filter(id=int(item['product_id'])).exists(), f"Product {item['product_id']} should associated with this order.")
 
         self.assertEqual(len(self.bag), self.order.products.count(), "The number of products in this order should match the bag's contents")
-    
-    def create_products(self, quantity: int):
-        products = []
-        for i in range(quantity):
-            product = Product.objects.create(
-                name=f"Product {i}",
-                rating=0,
-                price=Decimal('10.99'),
-                description="Test")
-            products.append(product)
-        return products
