@@ -37,3 +37,7 @@ main {
     margin-block-end: 2rem;
     border-radius: 2rem;
 }
+
+#empty-bag {
+    text-align: center;
+}
