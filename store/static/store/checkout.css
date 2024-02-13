@@ -1,7 +1,6 @@
 main {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    align-items: center;
     padding-inline: 40px;
     padding-block: 40px;
 }
@@ -32,12 +31,17 @@ main {
 #bag-contents aside img {
     text-align: center;
     justify-items: center;
-    inline-size: 150px;
+    inline-size: 125px;
     block-size: auto;
     margin-block-end: 2rem;
     border-radius: 2rem;
 }
 
 #empty-bag {
+    text-align: center;
+}
+
+#total {
+    display: block;
     text-align: center;
 }

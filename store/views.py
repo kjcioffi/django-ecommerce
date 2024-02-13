@@ -24,6 +24,8 @@ class ProductDetail(DetailView):
 def checkout(request):
     products_in_bag = get_products_and_quantities_from_bag(request)
 
+    total_cost = sum(bag_item["product"].price * bag_item["quantity"] for bag_item in products_in_bag)
+
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
@@ -32,7 +34,7 @@ def checkout(request):
     else:
         form = OrderForm()
 
-    return render(request, 'store/checkout.html', {'form': form, 'products_in_bag': products_in_bag})
+    return render(request, 'store/checkout.html', {'form': form, 'products_in_bag': products_in_bag, 'total_cost': total_cost})
 
 def get_products_and_quantities_from_bag(request):
     products = []

@@ -8,7 +8,7 @@
         <main>
             <form id="order-form" method="POST">
                 {% csrf_token %}
-                <strong>Contact and Shipping Information</strong>
+                <h3>Contact and Shipping Information</h3>
                 {{ form }}
                 <button id="place-order" type="submit">Place Order</button>
             </form>
@@ -23,6 +23,7 @@
                         </section>
                     {% endfor %}
                 </aside>
+                <strong id="total">Total Cost: ${{ total_cost }}</strong>
             </section>
         </main>
     {% else %}

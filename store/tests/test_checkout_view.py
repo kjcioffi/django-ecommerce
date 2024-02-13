@@ -83,3 +83,11 @@ class TestCheckoutView(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.context['products_in_bag'], [])
+
+    def test_session_total_equals_context_total(self):
+        response = self.client.get(reverse('store:checkout'))
+
+        # products_in_bag context item maps the contains the necessary session data and product model objects needed.
+        session_total = sum(bag_item['product'].price * bag_item['quantity'] for bag_item in response.context['products_in_bag'])
+
+        self.assertEqual(session_total, response.context['total_cost'])
