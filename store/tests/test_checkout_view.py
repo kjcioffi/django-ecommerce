@@ -74,3 +74,12 @@ class TestCheckoutView(TestCase):
 
             self.assertIn(product_id, session_bag_product_quantities, f"Product ID {product_id} wasn't found in bag items.")
             self.assertEqual(product_quantity, session_bag_product_quantities[product_id])
+
+    def test_checkout_view_with_empty_session(self):
+        self.session['bag'] = []
+        self.session.save()
+
+        response = self.client.get(reverse('store:checkout'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.context['products_in_bag'], [])
