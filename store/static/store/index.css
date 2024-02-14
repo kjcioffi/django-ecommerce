@@ -7,15 +7,25 @@
 }
 
 .product {
-    margin-block-end: 100px;
     text-align: center;
 }
 
 .product img {
     width: 100%;
+    border-radius: 15px;
     height: auto;
 }
 
 .success {
     text-align: center;
+}
+
+#add-to-bag {
+    display: block;
+    margin-inline: auto;
+    inline-size: 10rem;
+    block-size: 2.5rem;
+    margin-block-end: 1.5rem;
+    border-radius: 2.5rem;
+    cursor: pointer;
 }
