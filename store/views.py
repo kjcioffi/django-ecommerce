@@ -6,7 +6,7 @@ from django.views.generic.detail import DetailView
 from django.views.decorators.http import require_http_methods
 from store.forms import OrderForm
 
-from store.models import Product
+from store.models import OrderItem, Product
 
 class Index(ListView):
     model = Product
@@ -22,15 +22,23 @@ class ProductDetail(DetailView):
     template_name = 'store/product_detail.html'
 
 def checkout(request):
+
+    # populate products in the purchase summary of the web page
     products_in_bag = get_products_and_quantities_from_bag(request)
 
+    # context item for customer to view when placing order.
     total_cost = sum(bag_item["product"].price * bag_item["quantity"] for bag_item in products_in_bag)
 
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
-            form.save()
+            order = form.save()
+
+            for bag_item in products_in_bag:
+                OrderItem.objects.create(order=order, product=bag_item["product"], quantity=bag_item["quantity"])
+
             return redirect('store:index')
+        
     else:
         form = OrderForm()
 

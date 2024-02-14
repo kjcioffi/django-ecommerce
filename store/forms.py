@@ -7,7 +7,7 @@ import re
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ["products"]
+        exclude = ["products", "total_cost"]
         
 
     def clean_phone_number(self):

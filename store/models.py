@@ -15,6 +15,7 @@ class Product(models.Model):
 
 class Order(models.Model):
     products = models.ManyToManyField(Product, through="OrderItem")
+    total_cost = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(1.00)])
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
@@ -23,6 +24,11 @@ class Order(models.Model):
     zip = models.CharField(max_length=5)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
+
+    def save(self, *args, **kwargs):
+        if self.pk is None:
+            self.total_cost = 0.00
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"Order #{self.id}"
@@ -39,3 +45,8 @@ class OrderItem(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
+        order = self.order
+        total_cost = sum(order_item.quantity * order_item.product.price for order_item in order.orderitem_set.all())
+        order.total_cost = total_cost
+        order.save()
+        

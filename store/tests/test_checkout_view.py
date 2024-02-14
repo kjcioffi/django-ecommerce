@@ -13,7 +13,7 @@ class TestCheckoutView(TestCase):
         self.products = create_products(10)
 
         self.session = self.client.session
-        self.session['bag'] = [{'product_id': product.id, 'quantity': random.randint(0, 10)} for product in self.products]
+        self.session['bag'] = [{'product_id': product.id, 'quantity': random.randint(1, 10)} for product in self.products]
         self.session.save()
 
         self.form_data = {"first_name": "Michael",
@@ -87,7 +87,18 @@ class TestCheckoutView(TestCase):
     def test_session_total_equals_context_total(self):
         response = self.client.get(reverse('store:checkout'))
 
-        # products_in_bag context item maps the contains the necessary session data and product model objects needed.
+        # products_in_bag context item maps the necessary session data and product model objects needed.
         session_total = sum(bag_item['product'].price * bag_item['quantity'] for bag_item in response.context['products_in_bag'])
 
         self.assertEqual(session_total, response.context['total_cost'])
+
+    def test_order_total_persists_after_order_placed(self):
+        response = self.client.get(reverse('store:checkout')) # get context items
+        request = self.client.post(reverse('store:checkout'), self.form_data)
+        self.assertEqual(request.status_code, 302)
+
+        saved_order = Order.objects.filter(first_name="Michael", last_name="Dillon")
+        self.assertTrue(saved_order.exists())
+        saved_order = saved_order.get()
+
+        self.assertEqual(saved_order.total_cost, response.context["total_cost"])
