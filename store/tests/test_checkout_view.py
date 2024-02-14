@@ -100,5 +100,14 @@ class TestCheckoutView(TestCase):
 
         self.assertEqual(saved_order.total_cost, self.response.context["total_cost"])
 
+    def test_bag_is_emptied_when_order_is_placed(self):
+        request = self.post_form_data(self.form_data)
+        self.assertEqual(request.status_code, 302)
+
+        redirect_response = self.client.get(request.url)
+
+        self.assertEqual(redirect_response.context['total_items'], 0)
+        self.assertEqual(self.client.session['bag'], [])
+
     def post_form_data(self, form_data):
         return self.client.post(reverse('store:checkout'), form_data)

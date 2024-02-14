@@ -4,6 +4,7 @@ from django.shortcuts import redirect, render
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.decorators.http import require_http_methods
+from django.contrib import messages
 from store.forms import OrderForm
 
 from store.models import OrderItem, Product
@@ -37,8 +38,14 @@ def checkout(request):
             for bag_item in products_in_bag:
                 OrderItem.objects.create(order=order, product=bag_item["product"], quantity=bag_item["quantity"])
 
+            request.session['bag'] = []
+            request.session['total_items'] = 0
+
+            messages.add_message(request, messages.SUCCESS, "Order placed! Thank you for your business, "
+                                "most customers recieve their orders in 2 - 3 business days. "
+                                "Please contact us if it has been more than 5 business days.")
+            
             return redirect('store:index')
-        
     else:
         form = OrderForm()
 

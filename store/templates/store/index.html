@@ -4,6 +4,13 @@
     {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/index.css' %}">{% endblock %}
 
 {% block content %}
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <h1{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h1>
+            {% endfor %}
+        </ul>
+    {% endif %}
     <main class="products">
     {% for product in product_list %}
         <section class="product">
