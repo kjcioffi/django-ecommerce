@@ -7,6 +7,7 @@
 
 .product img {
     inline-size: 100%;
+    border-radius: 15px;
     block-size: auto;
 }
 
