@@ -45,3 +45,13 @@ main {
     display: block;
     text-align: center;
 }
+
+#place-order {
+    display: block;
+    margin-inline: auto;
+    inline-size: 7.5rem;
+    block-size: 2.5rem;
+    margin-block-end: 1.5rem;
+    border-radius: 2.5rem;
+    cursor: pointer;
+}
