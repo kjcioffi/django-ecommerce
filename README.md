@@ -106,6 +106,7 @@
 * Improve application accessibility for assistive technologies.
 * Add an "About Us" page to make use of the anchor tag in the navigation bar.
 * Pagination
+* Continue to improve mobile support.
 
 ## Learning Curves
 * Handling image files that aren't scriptable (iterating over lists or dictionaries with images in them).
@@ -129,4 +130,4 @@
         * Develop a better understanding of how to integrate functions or methods that create model objects and other setUp related tasks to reduce redundancy.
 * Apply normalization rules to the Order model.
     * It currently serves as a model for both shipping info and contact information so the fields should be split into more than one.
-* Learn how to position the product quantity next to the bag icon.
+* Learn how to better position the product quantity next to the bag icon.
