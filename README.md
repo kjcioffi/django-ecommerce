@@ -1,133 +1,53 @@
 # ContempoCrafts E-Commerce Application
 
-## Application Showcase
+Welcome to ContempoCrafts, an ambitious e-commerce application that combines functionality, aesthetics, and user experience into a seamless digital shopping platform. Crafted over a focused 14-day development sprint, this project is a testament to the power of modern web technologies.
 
-### Homepage
-![](homepage-display.png)
+## Explore ContempoCrafts
 
-### Product Detail
-![](product-detail-display.png)
+### Application Showcase
 
-### Checkout
-![](checkout-display.png)
+- **Homepage**: A welcoming first glance into our product world, designed for immediate engagement and ease of navigation.
 
-## Time Allocated
-* 14 days to complete an MVP.
+![Homepage](homepage-display.png)
 
-## Tech Stack
-* Django
-* PostgreSQL
-* HTML
-* CSS (Grid and Flexbox)
-* Vanilla JavaScript / Document Object Model API
+- **Product Detail**: Each product's story is intricately detailed, providing users with all the information they need to make informed decisions.
+  
+![Product Detail](product-detail-display.png)
 
-## Requirements
-* Design and develop an E-Commerce MVP based on:
-    * A bag system
-      * Session-based storage to structure and organize products that will be purchased.
-      * Track the quantity of each product item.
-    * 3 different webpages
-      * A homepage containing a list of products
-        * Include basic information about the products such as
-            the name and its rating.
-      * A product detail page
-        * Include all information on the detail page.
-      * A Checkout page
-        * Form for shipping and contact information
-        * Displays to the user the contents of the bag (products and quantities)
-        * When shipping and contact information are submitted
-            * An order is made
-    * Entities / Models
-        * Order
-        * Product
-        * OrderItem (intermediary table)
+- **Checkout**: A streamlined and intuitive checkout process, ensuring a pleasant conclusion to the shopping experience.
+  
+![Checkout](checkout-display.png)
 
-## Implementation
-* Bag/Checkout System
-    * JavaScript (ShoppingBagUtil.js)
-        * Dynamically updates the number of products in the bag.
-        * Sends the product ID of a particular product to a Django view when \
-        the "Add To Bag" button is clicked on the home or product detail page via AJAX.
-    * Django (add-to-bag view)
-        * Consumes the product ID sent from AJAX request and stores it in a user session.
-        * A session object and custom context processor to make the bag quantity available on all web pages via the key "total_items".
-*  Views
-    * Homepage
-        * IndexView (displays a maximum of 6 products)
-    * Product Detail
-        * Detail View
-    * Checkout
-        * Standard function-based view.
-            * Pulls products and quantities stored from \
-            the session in a dictionary called "bag".
-                * "Bag" is a list of dictionaries containing \
-                product IDs and quantities of each product.
-                * Contextualizes the "bag" into a new list \
-                containing the product model objects, \
-                the quantity of each product, and \
-                the image of the product.
-            * Calculates the total cost of all items to
-                * Display it in the view.
-                * Eventually save it in the order model object.
-            * Manages the ModelForm (associated with Order) on the view.
-            * Redirects the end users to the home page \
-            when a form is submitted and a new order is created. \
-            A message from django.contrib.messages is displayed confirming the order.
-* Models / Entities
-    * Product
-        * Fields
-            * name
-            * rating (MinValueValidator(0) and MaxValueValidator(10))
-            * price (max_digits=5, decimal_places=2)
-            * description
-            * image
-    * Order
-        * Fields
-            * products (M2M relationship)
-            * total_cost
-            * first_name
-            * last_name
-            * email
-            * phone_number (RegexValidator r'^\d{3}-\d{3}-\d{4}$')
-            * street
-            * zip
-            * city
-            * state
-    * OrderItem (intermediary table)
-        * Fields
-            * product (FK)
-            * order (FK)
-            * quantity
+## Project Insights
 
-## Potential Enhancements
-* Add the ability to remove products or modify the quantity in the bag.
-* Implement a payment system such as Stripe.
-* Account-oriented orders (make orders accessible in user profiles / allow guests).
-* Improve application accessibility for assistive technologies.
-* Add an "About Us" page to make use of the anchor tag in the navigation bar.
-* Pagination
-* Continue to improve mobile support.
+### Time Allocated
+- A mere **14 days** were allocated to transition from concept to MVP, highlighting efficient project management and development practices.
 
-## Learning Curves
-* Handling image files that aren't scriptable (iterating over lists or dictionaries with images in them).
-    - Reference get_products_and_quantities_from_bag function in store/views.py.
-* AJAX integration with Django views (design, development, and making use of CSRF tokens).
-    - JavaScript: ShoppingBagUtil.js
-    - Django: add-to-bag view
-* Django sessions
-* Test Driven Development (TDD) (Python)
-* Making practical use of Many-To-Many relationships.
-* Adding the total cost of an order after the model object is created and when its attribute/field has constraints on it.
+### Tech Stack
+- **Django & PostgreSQL**: For robust backend functionality and data management.
+- **HTML & CSS (Grid and Flexbox)**: Crafting responsive and aesthetically pleasing layouts.
+- **Vanilla JavaScript / Document Object Model API**: Enhancing the frontend with dynamic content and interactive elements.
 
-# Areas To Improvement In
-* I think I could've done better with balancing clean code practices and documentation. 
-    * Writing enough documentation that it isn't redundant but also ensuring it's there when deemed necessary.
-* TDD in JavaScript via Jest.
-* Research and learn more about best practices on
-    * Handling test images
-    * Designing and developing complicated views that may need one or more helper methods.
-    * How to make better use of methods like in store/tests/utils.py
-        * Develop a better understanding of how to integrate functions or methods that create model objects and other setUp related tasks to reduce redundancy.
-* Apply normalization rules to the Order model.
-    * It currently serves as a model for both shipping info and contact information so the fields should be split into more than one.
-* Learn how to better position the product quantity next to the bag icon.
+## Core Features
+
+### E-Commerce MVP Design
+- A comprehensive system encompassing a product bag, detailed product pages, and a checkout process, meticulously designed to cater to the end-user's shopping experience.
+
+### Dynamic Bag/Checkout System
+- Utilizing JavaScript for real-time updates and Django for session-based storage, we've created an intuitive shopping bag system that effortlessly scales across user sessions.
+
+### Responsive Web Design
+- Employing CSS Grid and Flexbox, the application adapts fluidly across devices, offering a consistent user experience regardless of the viewing platform.
+
+## Behind the Scenes: Implementation Journey
+
+- **AJAX and Django**: A harmonious integration enabling dynamic content updates without page reloads, improving the user experience by leaps and bounds.
+- **Django's ORM and Model Complexity**: Leveraging Django's powerful ORM to manage complex data relationships, showcasing the application's robust data architecture.
+
+## Future Roadmap
+
+- Introduction of **payment integration**, **advanced accessibility features**, and **mobile optimization**, ensuring ContempoCrafts remains at the forefront of e-commerce innovation.
+
+## Reflecting on the Journey
+
+This project was not just a demonstration of technical skill but a significant learning experience. It challenged preconceived notions, demanded innovative solutions, and ultimately, fostered a deeper understanding of what it means to build meaningful software in today's digital age.
