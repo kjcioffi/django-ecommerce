@@ -5,6 +5,7 @@
 - For the database I would mention the use of sqlite in the readme to test quickly the project instead of having to install a postgresql server specially to test the project
 - Good to see a context processor there, do you need to add tests for it?
 - Use black for fix code style automatically
+- Create utils file to contain business logic function (views should be as simple, readable as possible)
 ## Ecommerce
 
 ## Store
