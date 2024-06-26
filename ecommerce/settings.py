@@ -9,6 +9,7 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import sys
 import environ
 import os
 from pathlib import Path
@@ -34,13 +35,14 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
+DEBUG_TOOLBAR_ENABLED = DEBUG and "test" not in sys.argv
+
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 
 
 # Application definition
 
 INSTALLED_APPS = [
-    'debug_toolbar',
     'store',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -53,13 +55,27 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    "debug_toolbar.middleware.DebugToolbarMiddleware",
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+DEBUG_TOOLBAR, DEBUG_MIDDLEWARE = "debug_toolbar", "debug_toolbar.middleware.DebugToolbarMiddleware"
+
+
+if DEBUG_TOOLBAR_ENABLED:
+    INSTALLED_APPS += [DEBUG_TOOLBAR]
+    MIDDLEWARE += [DEBUG_MIDDLEWARE]
+else:
+    if "debug_toolbar" in INSTALLED_APPS:
+        INSTALLED_APPS.remove(DEBUG_TOOLBAR)
+        MIDDLEWARE = [
+            mw
+            for mw in MIDDLEWARE
+            if DEBUG_MIDDLEWARE not in mw
+        ]
 
 ROOT_URLCONF = 'ecommerce.urls'
 
@@ -87,7 +103,10 @@ WSGI_APPLICATION = 'ecommerce.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': env.db()
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db.sqlite3",
+    }
 }
 
 
