@@ -10,10 +10,4 @@ class Migration(migrations.Migration):
         ('store', '0008_alter_order_phone_number'),
     ]
 
-    operations = [
-        migrations.AlterField(
-            model_name='order',
-            name='phone_number',
-            field=models.CharField(validators=[django.core.validators.RegexValidator('^\\d{3}-\\d{3}-\\d{4}$')]),
-        ),
-    ]
+    operations = []

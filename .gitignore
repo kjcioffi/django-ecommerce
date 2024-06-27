@@ -1,8 +1,9 @@
 # files
 *.pyc
 .env
+db.sqlite3
 media/tests/products/test_image*.jpeg
 
 # directories
-.venv
+venv
 */__pycache__
