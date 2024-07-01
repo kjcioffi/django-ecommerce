@@ -3,3 +3,4 @@ django-environ==0.11.2 # environ variable management
 psycopg==3.1.19 # PostgeSQL DB adapter
 psycopg2==2.9.9 # Python-PostgreSQL DB adapter
 pillow==10.3.0 # image and static file library
+django-weasyprint==2.3.0
