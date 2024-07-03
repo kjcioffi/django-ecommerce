@@ -2,8 +2,8 @@
 *.pyc
 .env
 db.sqlite3
-media/tests/products/test_image*.jpeg
 
 # directories
+media/*
 venv
 */__pycache__
