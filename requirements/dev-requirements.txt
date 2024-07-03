@@ -13,7 +13,11 @@ django-debug-toolbar==4.4.2
 factory-boy==3.3.0
     # via -r .\requirements\dev-requirements.in
 faker==26.0.0
-    # via factory-boy
+    # via
+    #   factory-boy
+    #   faker-commerce
+faker-commerce==1.0.4
+    # via -r .\requirements\dev-requirements.in
 python-dateutil==2.9.0.post0
     # via faker
 ruff==0.5.0
