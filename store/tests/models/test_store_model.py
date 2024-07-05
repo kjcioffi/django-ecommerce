@@ -90,6 +90,12 @@ class TestStoreModel(TestCase):
             f"Store city field must be {self.city_char_length} characters or less.",
         )
 
+    def test_city_cannot_be_empty(self):
+        with self.assertRaisesMessage(ValidationError, "") as e:
+            self.store.city = ""
+            self.store.clean_fields()
+
+        self.assertIn("city", e.exception.message_dict)
     def test_state_within_25_chars(self):
         self.assertLessEqual(
             len(self.store.state),
