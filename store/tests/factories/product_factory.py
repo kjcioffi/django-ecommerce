@@ -18,7 +18,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
 
     name = factory.Sequence(lambda _: faker.ecommerce_name())
     rating = factory.Faker("pyint")
-    price = Decimal(random.randint(1, 1000))
+    price = factory.Sequence(lambda _: Decimal(random.randint(1, 10)))
     description = factory.Faker("text")
     image = SimpleUploadedFile(
         name="test_image.jpeg",
