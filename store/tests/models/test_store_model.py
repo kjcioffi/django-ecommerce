@@ -76,7 +76,7 @@ class TestStoreModel(TestCase):
         self.assertLessEqual(
             len(self.store.state),
             self.state_char_length,
-            f"Store name field must be {self.state_char_length} characters or less.",
+            f"Store state field must be {self.state_char_length} characters or less.",
         )
 
     def test_state_cant_exceed_25_chars(self):
@@ -92,5 +92,5 @@ class TestStoreModel(TestCase):
         self.assertEqual(
             len(self.store.state),
             self.state_char_length + 1,
-            f"Store name field must be {self.state_char_length} characters or less.",
+            f"Store state field must be {self.state_char_length} characters or less.",
         )
