@@ -129,7 +129,8 @@ class TestStoreModel(TestCase):
             len(self.store.state),
             self.state_char_length + 1,
             f"Store state field must be {self.state_char_length} characters or less.",
-    
+        )
+
     def test_state_cannot_be_empty(self):
         with self.assertRaisesMessage(ValidationError, "") as e:
             self.store.state = ""
