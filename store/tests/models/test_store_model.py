@@ -96,6 +96,18 @@ class TestStoreModel(TestCase):
             self.store.clean_fields()
 
         self.assertIn("city", e.exception.message_dict)
+
+    def test_city_accepts_max_length(self):
+        city: str = "".join(
+            random.choice(string.ascii_letters) for _ in range(self.city_char_length)
+        )
+
+        try:
+            self.store.city = city
+            self.store.clean_fields()
+        except ValidationError as e:
+            self.fail(f"Something went wrong: {e}")
+
     def test_state_within_25_chars(self):
         self.assertLessEqual(
             len(self.store.state),
