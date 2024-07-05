@@ -136,3 +136,14 @@ class TestStoreModel(TestCase):
             self.store.clean_fields()
 
         self.assertIn("state", e.exception.message_dict)
+
+    def test_state_accepts_max_length(self):
+        state: str = "".join(
+            random.choice(string.ascii_letters) for _ in range(self.state_char_length)
+        )
+
+        try:
+            self.store.state = state
+            self.store.clean_fields()
+        except ValidationError as e:
+            self.fail(f"Something went wrong: {e}")
