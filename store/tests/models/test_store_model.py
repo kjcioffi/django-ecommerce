@@ -47,6 +47,18 @@ class TestStoreModel(TestCase):
             self.store.clean_fields()
 
         self.assertIn("name", e.exception.message_dict)
+
+    def test_name_accepts_max_length(self):
+        name: str = "".join(
+            random.choice(string.ascii_letters) for _ in range(self.name_char_length)
+        )
+
+        try:
+            self.store.name = name
+            self.store.clean_fields()
+        except ValidationError as e:
+            self.fail(f"Something went wrong: {e}")
+
     def test_user_delete_cascades_store(self):
         self.store.owner.delete()
         self.assertFalse(Store.objects.filter(pk=self.store.pk).exists())
