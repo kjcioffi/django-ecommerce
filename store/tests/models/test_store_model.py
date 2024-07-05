@@ -53,7 +53,7 @@ class TestStoreModel(TestCase):
         self.assertLessEqual(
             len(self.store.city),
             self.city_char_length,
-            f"Store name field must be {self.city_char_length} characters or less.",
+            f"Store city field must be {self.city_char_length} characters or less.",
         )
 
     def test_city_cant_exceed_25_chars(self):
@@ -69,7 +69,7 @@ class TestStoreModel(TestCase):
         self.assertEqual(
             len(self.store.city),
             self.city_char_length + 1,
-            f"Store name field must be {self.city_char_length} characters or less.",
+            f"Store city field must be {self.city_char_length} characters or less.",
         )
 
     def test_state_within_25_chars(self):
