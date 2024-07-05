@@ -41,6 +41,12 @@ class TestStoreModel(TestCase):
             f"Store name field must be {self.name_char_length} characters or less.",
         )
 
+    def test_name_cannot_be_empty(self):
+        with self.assertRaisesMessage(ValidationError, "") as e:
+            self.store.name = ""
+            self.store.clean_fields()
+
+        self.assertIn("name", e.exception.message_dict)
     def test_user_delete_cascades_store(self):
         self.store.owner.delete()
         self.assertFalse(Store.objects.filter(pk=self.store.pk).exists())
