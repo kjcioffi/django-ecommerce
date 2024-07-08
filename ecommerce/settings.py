@@ -43,7 +43,12 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 # Application definition
 
 INSTALLED_APPS = [
+    # custom
     'store',
+    # third party
+    'allauth',
+    'allauth.account',
+    # default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
