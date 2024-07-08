@@ -10,7 +10,7 @@ class StoreAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    fields = ["store", "name", "rating", "price", "decription", "image"]
+    fields = ["store", "name", "rating", "price", "description", "image"]
 
 
 class OrderItemStackedInline(admin.StackedInline):
