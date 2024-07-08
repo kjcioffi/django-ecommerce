@@ -10,4 +10,4 @@ class StoreAdmin(admin.ModelAdmin):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    fields = ["name", "rating", "price", "description", "image"]
+    fields = ["store", "name", "rating", "price", "decription", "image"]
