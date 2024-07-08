@@ -30,5 +30,7 @@ class OrderAdmin(admin.ModelAdmin):
         "zip",
         "city",
         "state",
+        "total_cost",
     ]
     inlines = [OrderItemStackedInline]
+    readonly_fields = ["total_cost"]
