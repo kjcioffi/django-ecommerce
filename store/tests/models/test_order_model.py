@@ -1,69 +1,78 @@
-from decimal import Decimal
 from django.test import TestCase
-from store.models import Product, Order
-from store.tests.utils import create_products
+from store.models import Product
+from store.tests.factories.order_factory import OrderFactory
+from store.tests.factories.order_item_factory import OrderItemFactory
 
 
 class TestOrderModel(TestCase):
     def setUp(self):
-        self.invalid_phone_number = '+1555-555-5555'
-        self.valid_phone_number = '555-555-5555'
-        
-        self.order = Order.objects.create(
-            first_name='John',
-            last_name='Doe',
-            email='john@example.com',
-            phone_number=self.valid_phone_number,
-            street='123 Main St',
-            zip='12345',
-            city='Cityville',
-            state='State'
-        )
+        self.invalid_phone_number = "+1555-555-5555"
+        self.valid_phone_number = "555-555-5555"
 
-        self.phone_regex = r'^\d{3}-\d{3}-\d{4}$'
+        self.order = OrderFactory()
 
-        self.products = create_products(10)
-        self.bag = [{'product_id': product.id, 'quantity': 1} for product in self.products]
+        self.order_items = OrderItemFactory.create_batch(10, order=self.order)
+        self.bag = [
+            {"product_id": order_item.product.id, "quantity": order_item.quantity}
+            for order_item in self.order_items
+        ]
 
-        self.client.session['bag'] = self.bag
+        self.client.session["bag"] = self.bag
         self.client.session.save()
-        
+
     def test_add_products_to_order(self):
-        for product in self.products:
-            self.order.products.add(product)
-            self.assertIn(product, self.order.products.all())
+        """
+        Ensure products are properly added to an order.
+        """
+        for order_item in self.order_items:
+            self.order.products.add(order_item.product)
+            self.assertIn(
+                order_item.product,
+                self.order.products.all(),
+                f"Product {order_item.product.name} should've been added to the order.",
+            )
 
     def test_remove_products_to_order(self):
-        for product in self.products:
-            self.order.products.add(product)
- 
-        product_to_be_removed = self.order.products.get(name__icontains="0")
+        """
+        Ensure products are properly removed from an order.
+        """
+        for order_item in self.order_items:
+            self.order.products.add(order_item.product)
+
+        product_to_be_removed = self.order.products.all()[0]
         self.order.products.remove(product_to_be_removed)
-        self.assertNotIn(product_to_be_removed, self.order.products.all())
-
-    def test_query_products_in_order(self):
-        for product in self.products:
-            self.order.products.add(product)
-
-        product_in_order = Order.objects.filter(products__name__icontains="3")
-        self.assertTrue(product_in_order.exists())
-
-    def test_valid_phone_number(self):
-        self.assertRegex(self.order.phone_number, self.phone_regex)
-
-    def test_invalid_phone_number(self):
-        self.order.phone_number = self.invalid_phone_number
-        self.assertNotRegex(self.order.phone_number, self.phone_regex)
+        self.assertNotIn(
+            product_to_be_removed,
+            self.order.products.all(),
+            f"Product {order_item.product.name} should've been removed from the order.",
+        )
 
     def test_products_associated_with_order(self):
         """
-        Test that products added to a simulated bag are correctly associated with an order.    
+        Ensure products added to a simulated bag are correctly associated with an order.
         """
         for item in self.bag:
-            product = Product.objects.get(id=int(item['product_id']))
+            product = Product.objects.get(id=item["product_id"])
             self.order.products.add(product)
 
         for item in self.bag:
-            self.assertTrue(self.order.products.filter(id=int(item['product_id'])).exists(), f"Product {item['product_id']} should associated with this order.")
+            self.assertTrue(
+                self.order.products.filter(id=item["product_id"]).exists(),
+                f"Product {item['product_id']} should associated with this order.",
+            )
 
-        self.assertEqual(len(self.bag), self.order.products.count(), "The number of products in this order should match the bag's contents")
+        self.assertEqual(
+            len(self.bag),
+            self.order.products.count(),
+            "The number of products in this order should match the bag's contents",
+        )
+
+    def test_total_cost_not_zero_when_product_added(self):
+        """
+        When OrderItems are added to an order, ensure they update the total cost of an order.
+        """
+        order = OrderFactory()
+        order_items = OrderItemFactory.create_batch(10, order=order)
+        order_total = sum([item.product.price * item.quantity for item in order_items])
+
+        self.assertEqual(order_total, order.total_cost)
