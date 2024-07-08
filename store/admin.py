@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import OrderItem, Product, Store
+from .models import Order, OrderItem, Product, Store
 
 
 @admin.register(Store)
@@ -16,3 +16,19 @@ class ProductAdmin(admin.ModelAdmin):
 class OrderItemStackedInline(admin.StackedInline):
     model = OrderItem
     fields = ["product", "order", "quantity"]
+
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    fields = [
+        "store",
+        "first_name",
+        "last_name",
+        "email",
+        "phone_number",
+        "street",
+        "zip",
+        "city",
+        "state",
+    ]
+    inlines = [OrderItemStackedInline]
