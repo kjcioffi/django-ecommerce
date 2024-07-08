@@ -136,6 +136,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'  # Redirect to the home page after login
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # Redirect to the home page after logout
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect to the home page after signup
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
