@@ -6,6 +6,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Store(models.Model):
     name = models.CharField(max_length=100)
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    category = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
 
