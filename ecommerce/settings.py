@@ -39,6 +39,8 @@ DEBUG_TOOLBAR_ENABLED = DEBUG and "test" not in sys.argv
 
 ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 
+INTERNAL_IPS = ["127.0.0.1", "localhost"]
+
 
 # Application definition
 
