@@ -43,7 +43,12 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
 # Application definition
 
 INSTALLED_APPS = [
+    # custom
     'store',
+    # third party
+    'allauth',
+    'allauth.account',
+    # default
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -53,6 +58,9 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    # third party
+    'allauth.account.middleware.AccountMiddleware',
+    # default
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -128,6 +136,18 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    # Needed to login by username in Django admin, regardless of `allauth`
+    'django.contrib.auth.backends.ModelBackend',
+
+    # `allauth` specific authentication methods, such as login by email
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+LOGIN_REDIRECT_URL = '/'  # Redirect to the home page after login
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'  # Redirect to the home page after logout
+ACCOUNT_SIGNUP_REDIRECT_URL = '/'  # Redirect to the home page after signup
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
