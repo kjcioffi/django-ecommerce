@@ -15,7 +15,10 @@ class Index(ListView):
     template_name = 'store/index.html'
 
     def get_queryset(self) -> QuerySet[Product]:
-        return super().get_queryset()[:6]
+class StoreList(ListView):
+    model = Store
+    context_object_name = "stores"
+    template_name = "store/store_list.html"
 
 class ProductDetail(DetailView):
     model = Product
