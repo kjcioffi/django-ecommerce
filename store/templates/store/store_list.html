@@ -1,0 +1,15 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+        <main class="store-list">
+            {% for store in stores %}
+                <section class="store-item">
+                    <a href="{% url 'store:store_front' store_id=store.id %}"><img src="{{ store.image.url }}" alt="{{ store.name }}" class="store-image"></a>
+                    <div class="store-info">
+                        <h2 class="store-name">{{ store.name }}</h2>
+                        <p class="store-category">{{ store.category }}</p>
+                    </div>
+                </section>
+            {% endfor %}
+        </main>
+{% endblock %}
