@@ -7,14 +7,18 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from store.forms import OrderForm
 
-from store.models import OrderItem, Product
+from store.models import OrderItem, Product, Store
 
-class Index(ListView):
+class StoreProducts(ListView):
     model = Product
-    context_object_name = "product_list"
-    template_name = 'store/index.html'
+    context_object_name = "products"
+    template_name = "store/store_products.html"
 
     def get_queryset(self) -> QuerySet[Product]:
+        store_id = self.kwargs.get('store_id')
+        queryset = Product.objects.filter(store=store_id)
+        return queryset
+
 class StoreList(ListView):
     model = Store
     context_object_name = "stores"

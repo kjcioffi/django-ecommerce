@@ -1,0 +1,21 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+<main class="products">
+    {% for product in products %}
+        <section class="product">
+            <a href="{% url 'store:product' pk=product.pk %}"><img src="{{ product.image.url }}" alt="{{ product.name }}"></a>
+            <div class="product-info">
+                <h2 class="product-name">{{ product.name }}</h2>
+                <p class="product-rating">{{ product.rating }}/10</p>
+            </div>
+            <button id="add-to-bag" product-id="{{ product.id }}">Add To Bag</button>
+        </section>
+    {% endfor %}
+</main>
+{% endblock %}
+
+{% block scripts %}
+    <script src="{% static 'store/js/ShoppingBagUtil.js' %}"></script>
+{% endblock %}
