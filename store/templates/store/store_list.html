@@ -3,6 +3,7 @@
 {% block content %}
         <main class="store-list">
             {% for store in stores %}
+                {% if store.image %}
                 <section class="store-item">
                     <a href="{% url 'store:store_front' store_id=store.id %}"><img src="{{ store.image.url }}" alt="{{ store.name }}" class="store-image"></a>
                     <div class="store-info">
@@ -10,6 +11,7 @@
                         <p class="store-category">{{ store.category }}</p>
                     </div>
                 </section>
+                {% endif %}
             {% endfor %}
         </main>
 {% endblock %}
