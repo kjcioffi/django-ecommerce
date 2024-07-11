@@ -16,6 +16,16 @@
                 <a href="{% url 'store:checkout' %}"><img id="bag-icon" src="{% static 'store/images/shopping_bag.png' %}"></a>
                 <p class="bag-quantity">{{ total_items }}</p>
             </section>
+
+            {% if request.user.is_authenticated %}
+            <a href="{% url 'store:product_admin' %}">Product Admin</a>
+            <form action="/accounts/logout/" method="POST">
+                {% csrf_token%}
+                <button type="submit">Logout</button>
+            </form>
+            {% else %}
+            <a href="/accounts/login">Login</a>
+            {% endif %}
         </nav>
         {% block content %}{% endblock %}
         {% block scripts %}{% endblock %}
