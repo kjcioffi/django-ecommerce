@@ -1,6 +1,6 @@
 from django import forms
 
-from store.models import Order
+from store.models import Order, Product
 
 import re
 
@@ -17,3 +17,9 @@ class OrderForm(forms.ModelForm):
         if not pattern.match(phone_number):
             raise forms.ValidationError('Please use XXX-XXX-XXXX format.')
         return phone_number
+    
+class ProductAdminForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = "__all__"
+    
