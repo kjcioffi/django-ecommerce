@@ -1,3 +1,4 @@
+from typing import Any
 from django.db.models.query import QuerySet
 from django.http import JsonResponse
 from django.shortcuts import redirect, render
@@ -108,3 +109,10 @@ class ProductAdmin(LoginRequiredMixin, ListView):
     def get_queryset(self) -> QuerySet[Product]:
         # return products only from the store they own
         return Product.objects.filter(store__owner=self.request.user)
+    
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+    
+        context["store"] = self.request.user.store_set.get()
+        return context
+    
