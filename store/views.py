@@ -8,6 +8,7 @@ from django.contrib import messages
 from store.forms import OrderForm
 
 from store.models import OrderItem, Product
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class Index(ListView):
     model = Product
@@ -97,3 +98,13 @@ def add_to_bag(request) -> JsonResponse:
     request.session['total_items'] = total_items
 
     return JsonResponse({'status': 'success', 'total_items': total_items})
+
+class ProductAdmin(LoginRequiredMixin, ListView):
+    model = Product
+    context_object_name = "products"
+    template_name = "store/product_admin.html"
+    login_url = "/accounts/login"
+
+    def get_queryset(self) -> QuerySet[Product]:
+        # return products only from the store they own
+        return Product.objects.filter(store__owner=self.request.user)
