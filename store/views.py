@@ -1,12 +1,13 @@
 from typing import Any
 from django.db.models.query import QuerySet
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
-from store.forms import OrderForm
+from store.forms import OrderForm, ProductAdminForm
 
 from store.models import OrderItem, Product
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -116,3 +117,16 @@ class ProductAdmin(LoginRequiredMixin, ListView):
         context["store"] = self.request.user.store_set.get()
         return context
     
+def product_modify_admin(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    if request.method == "POST":
+        form = ProductAdminForm(request.POST, instance=product)
+
+        if form.is_valid():
+            form.save()
+            messages.add_message(f"{product.name}({product.pk}) successfully saved.")
+            return redirect(reverse("store:product_admin"))
+        else:
+            form = ProductAdminForm()
+    
+    return render(request, 'store/product_admin_modify.html', {'form': form})
