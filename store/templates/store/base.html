@@ -12,8 +12,10 @@
             <a href="{% url 'store:index' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
             <aside>ContempoCrafts</aside>
             <a href="{% url 'store:index' %}">About Us</a>
-            <a href="{% url 'store:checkout' %}"><img id="bag" src="{% static 'store/images/shopping_bag.png' %}"></a>
-            <p class="bag-quantity">{{ total_items }}</p>
+            <section id="bag">
+                <a href="{% url 'store:checkout' %}"><img id="bag-icon" src="{% static 'store/images/shopping_bag.png' %}"></a>
+                <p class="bag-quantity">{{ total_items }}</p>
+            </section>
         </nav>
         {% block content %}{% endblock %}
         {% block scripts %}{% endblock %}
