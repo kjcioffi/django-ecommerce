@@ -1,0 +1,11 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+
+<h1>Product Admin for {{ store.name }}</h1>
+
+{% for product in products %}
+    <a href="">{{ product.name }}</a>
+{% endfor %}
+
+{% endblock %}
