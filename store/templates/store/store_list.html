@@ -1,0 +1,25 @@
+{% extends 'store/base.html' %}
+{% load static %}
+
+{% block content %}
+        <main class="store-list">
+            {% for store in stores %}
+            
+                <section class="store">
+                    <a href="{% url 'store:store_front' store_id=store.id %}">
+                    {% if store.image %}
+                    <img src="{{ store.image.url }}" alt="{{ store.name }}" class="store-image">
+                    {% else %}
+                    <img src="{% static 'store/images/logo.png' %}" alt="{{ store.name }}" class="store-image">
+                    {% endif %}
+                    </a>
+                    
+                    <div class="store-info">
+                        <h2 class="store-name">{{ store.name }}</h2>
+                        <p class="store-category">{{ store.category }}</p>
+                    </div>
+                </section>
+            </a>
+            {% endfor %}
+        </main>
+{% endblock %}

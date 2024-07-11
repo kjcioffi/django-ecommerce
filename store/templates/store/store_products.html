@@ -1,28 +1,19 @@
-{% extends "store/base.html" %}
+{% extends 'store/base.html' %}
 {% load static %}
 
-    {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/index.css' %}">{% endblock %}
-
 {% block content %}
-    {% if messages %}
-        <ul class="messages">
-            {% for message in messages %}
-            <h1{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</h1>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    <main class="products">
-    {% for product in product_list %}
+<main class="products">
+    {% for product in products %}
         <section class="product">
             <a href="{% url 'store:product' pk=product.pk %}"><img src="{{ product.image.url }}" alt="{{ product.name }}"></a>
             <div class="product-info">
                 <h2 class="product-name">{{ product.name }}</h2>
-                <p class="product-rating">Rating: {{ product.rating }}/10</p>
+                <p class="product-rating">{{ product.rating }}/10</p>
             </div>
             <button id="add-to-bag" product-id="{{ product.id }}">Add To Bag</button>
         </section>
     {% endfor %}
-    </main>
+</main>
 {% endblock %}
 
 {% block scripts %}
