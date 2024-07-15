@@ -1,6 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
-from django.http import JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic.list import ListView
@@ -8,6 +8,7 @@ from django.views.generic.detail import DetailView
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from store.forms import OrderForm, ProductAdminForm
+from django.contrib.auth.decorators import login_required
 
 from store.models import OrderItem, Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -123,17 +124,22 @@ class ProductAdmin(LoginRequiredMixin, ListView):
     
         context["store"] = self.request.user.store_set.get()
         return context
-    
-def product_modify_admin(request, pk):
+
+@login_required
+def product_admin_modify(request, pk):
     product = get_object_or_404(Product, pk=pk)
+    form = ProductAdminForm(instance=product)
+
     if request.method == "POST":
-        form = ProductAdminForm(request.POST, instance=product)
+        form = ProductAdminForm(request.POST, request.FILES, instance=product)
 
         if form.is_valid():
-            form.save()
-            messages.add_message(f"{product.name}({product.pk}) successfully saved.")
-            return redirect(reverse("store:product_admin"))
-        else:
-            form = ProductAdminForm()
+            if 'update' in request.POST:
+                form.save()
+                messages.add_message(request, messages.INFO, f"{product.name}({product.pk}) successfully saved.")
+            elif 'delete' in request.POST:
+                product.delete()
+                messages.add_message(request, messages.INFO, f"{product.name}(ID {product.pk}) successfully deleted.")
+            return HttpResponseRedirect(reverse("store:product_admin"))
     
     return render(request, 'store/product_admin_modify.html', {'form': form})
