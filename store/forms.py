@@ -21,5 +21,5 @@ class OrderForm(forms.ModelForm):
 class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
-        fields = "__all__"
+        exclude = ["store"]
     
