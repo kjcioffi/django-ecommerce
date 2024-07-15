@@ -9,16 +9,23 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from store.forms import OrderForm, ProductAdminForm
 
-from store.models import OrderItem, Product
+from store.models import OrderItem, Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-class Index(ListView):
+class StoreProducts(ListView):
     model = Product
-    context_object_name = "product_list"
-    template_name = 'store/index.html'
+    context_object_name = "products"
+    template_name = "store/store_products.html"
 
     def get_queryset(self) -> QuerySet[Product]:
-        return super().get_queryset()[:6]
+        store_id = self.kwargs.get('store_id')
+        queryset = Product.objects.filter(store=store_id)
+        return queryset
+
+class StoreList(ListView):
+    model = Store
+    context_object_name = "stores"
+    template_name = "store/store_list.html"
 
 class ProductDetail(DetailView):
     model = Product

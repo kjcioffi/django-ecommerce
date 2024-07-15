@@ -9,9 +9,9 @@
     </head>
     <body>
         <nav class="menu">
-            <a href="{% url 'store:index' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
+            <a href="{% url 'store:store_list' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
             <aside>ContempoCrafts</aside>
-            <a href="{% url 'store:index' %}">About Us</a>
+            <a href="{% url 'store:store_list' %}">About Us</a>
             <section id="bag">
                 <a href="{% url 'store:checkout' %}"><img id="bag-icon" src="{% static 'store/images/shopping_bag.png' %}"></a>
                 <p class="bag-quantity">{{ total_items }}</p>

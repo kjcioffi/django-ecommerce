@@ -11,7 +11,7 @@ class Store(models.Model):
     category = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
-    image = models.ImageField(upload_to=StoreUtils.generate_store_image_path)
+    image = models.ImageField(upload_to=StoreUtils.generate_store_image_path, blank=True)
 
     def __str__(self):
         return self.name
