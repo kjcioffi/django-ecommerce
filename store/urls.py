@@ -4,12 +4,13 @@ from .views import (
     StoreProducts,
     ProductDetail,
     ProductAdmin,
+    ProductAdminAdd,
     checkout,
     add_to_bag,
     product_admin_modify,
 )
 
-app_name = 'store'
+app_name = "store"
 urlpatterns = [
     path("store/<int:store_id>", StoreProducts.as_view(), name="store_front"),
     path("", StoreList.as_view(), name="store_list"),
@@ -21,5 +22,10 @@ urlpatterns = [
         "user-admin/store/products/modify/<int:pk>",
         product_admin_modify,
         name="product_admin_modify",
+    ),
+    path(
+        "user-admin/store/products/add",
+        ProductAdminAdd.as_view(),
+        name="product_admin_add",
     ),
 ]
