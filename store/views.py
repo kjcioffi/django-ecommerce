@@ -151,6 +151,10 @@ class ProductAdmin(LoginRequiredMixin, ListView):
 @login_required
 def product_admin_modify(request, pk):
     product = get_object_or_404(Product, pk=pk)
+
+    if product.store.owner != request.user:
+        return HttpResponseForbidden("You don't have permission to modify this product.")
+    
     form = ProductAdminForm(instance=product)
 
     if request.method == "POST":
