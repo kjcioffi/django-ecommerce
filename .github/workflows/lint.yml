@@ -22,4 +22,4 @@ jobs:
     - name: Run ruff
       run: |
         # Exclude migrations, manage.py, and other common Django files
-        ruff . --exclude '**/migrations/*,manage.py' --fix
+        ruff check . --exclude '**/migrations/*,manage.py' --fix
