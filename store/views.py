@@ -144,7 +144,7 @@ class ProductAdmin(LoginRequiredMixin, ListView):
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
 
-        context["store"] = self.request.user.store_set.get()
+        context["store"] = Store.objects.for_user_admin(owner=self.request.user)
         return context
 
 
