@@ -11,11 +11,8 @@ class StoreManager(models.Manager):
 
 
 class ProductManager(models.Manager):
-    def filter_by_store(self, owner: User):
+    def filter_by_store(self, store):
         """
         Fetches products associated with a store.
         """
-        if owner != AnonymousUser:
-            return self.filter(store__owner=owner)
-        else:
-            return self.none()
+        return self.filter(store=store)
