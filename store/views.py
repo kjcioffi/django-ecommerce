@@ -139,7 +139,7 @@ class ProductAdmin(LoginRequiredMixin, ListView):
 
     def get_queryset(self) -> QuerySet[Product]:
         # return products only from the store they own
-        return Product.objects.filter(store__owner=self.request.user)
+        return Product.objects.filter_by_store(owner=self.request.user)
 
     def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
         context = super().get_context_data(**kwargs)
