@@ -1,0 +1,19 @@
+{% extends 'store/base.html' %}
+
+{% block content %}
+
+<h1>Product Admin for {{ store.name }}</h1>
+<a href="{% url 'store:product_admin_add' %}"><h2>Add Product &plus;</h2></a>
+
+
+{% if messages %}
+    {% for message in messages %}
+    <p>{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+{% for product in products %}
+    <a href="{% url 'store:product_admin_modify' pk=product.pk %}">{{ product.name }}</a>
+{% endfor %}
+
+{% endblock %}

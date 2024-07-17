@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 
+from store.managers import ProductManager, StoreManager
 from store.store_utils import StoreUtils
 
 
@@ -12,6 +13,8 @@ class Store(models.Model):
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
     image = models.ImageField(upload_to=StoreUtils.generate_store_image_path, blank=True)
+
+    objects = StoreManager()
 
     def __str__(self):
         return self.name
@@ -26,6 +29,8 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=5, decimal_places=2)
     description = models.TextField()
     image = models.ImageField(upload_to="products/")
+
+    objects = ProductManager()
 
     def __str__(self):
         return f"{self.name}"
