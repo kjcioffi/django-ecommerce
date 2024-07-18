@@ -4,6 +4,9 @@ import os
 import sys
 
 
+# set ipdb as default breakpoint
+os.environ["PYTHONBREAKPOINT"] = "ipdb.set_trace"
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ecommerce.settings')
