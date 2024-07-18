@@ -62,7 +62,7 @@ def checkout(request):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                "Order placed! Thank you for your business, "
+                "Order(s) placed! Thank you for your business, "
                 "most customers recieve their orders in 2 - 3 business days. "
                 "Please contact us if it has been more than 5 business days.",
             )
