@@ -6,10 +6,20 @@
 #
 asgiref==3.8.1
     # via django
+asttokens==2.4.1
+    # via stack-data
+colorama==0.4.6
+    # via ipython
+decorator==5.1.1
+    # via
+    #   ipdb
+    #   ipython
 django==5.0.6
     # via django-debug-toolbar
 django-debug-toolbar==4.4.2
     # via -r .\requirements\dev-requirements.in
+executing==2.0.1
+    # via stack-data
 factory-boy==3.3.0
     # via -r .\requirements\dev-requirements.in
 faker==26.0.0
@@ -18,15 +28,41 @@ faker==26.0.0
     #   faker-commerce
 faker-commerce==1.0.4
     # via -r .\requirements\dev-requirements.in
+ipdb==0.13.13
+    # via -r .\requirements\dev-requirements.in
+ipython==8.26.0
+    # via ipdb
+jedi==0.19.1
+    # via ipython
+matplotlib-inline==0.1.7
+    # via ipython
+parso==0.8.4
+    # via jedi
+prompt-toolkit==3.0.47
+    # via ipython
+pure-eval==0.2.2
+    # via stack-data
+pygments==2.18.0
+    # via ipython
 python-dateutil==2.9.0.post0
     # via faker
 ruff==0.5.0
     # via -r .\requirements\dev-requirements.in
 six==1.16.0
-    # via python-dateutil
+    # via
+    #   asttokens
+    #   python-dateutil
 sqlparse==0.5.0
     # via
     #   django
     #   django-debug-toolbar
+stack-data==0.6.3
+    # via ipython
+traitlets==5.14.3
+    # via
+    #   ipython
+    #   matplotlib-inline
 tzdata==2024.1
     # via django
+wcwidth==0.2.13
+    # via prompt-toolkit
