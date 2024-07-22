@@ -1,5 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.forms import ModelForm
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -8,7 +9,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
-from store.forms import OrderForm, ProductAdminForm
+from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 
 from store.models import Order, Product, Store
@@ -189,3 +190,37 @@ class OrderAdmin(LoginRequiredMixin, ListView):
 
         context["store"] = Store.objects.for_user_admin(owner=self.request.user)
         return context
+
+
+@login_required
+def order_admin_modify(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    if order.store.owner != request.user:
+        return HttpResponseForbidden("You don't have permission to modify this order.")
+
+    form: ModelForm = OrderAdminForm(instance=order)
+
+    if request.method == "POST":
+        form: ModelForm = OrderAdminForm(request.POST, instance=order)
+
+        if form.is_valid():
+            if "update" in request.POST:
+                form.save()
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    f"{order.name}({order.pk}) successfully saved.",
+                )
+            elif "delete" in request.POST:
+                order.delete()
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    f"Order from {order.first_name} {order.last_name} (ID {order.pk}) successfully deleted.",
+                )
+            return HttpResponseRedirect(reverse("store:order_admin"))
+
+    return render(
+        request, "store/user-admin/order/order_admin_modify.html", {"form": form}
+    )
