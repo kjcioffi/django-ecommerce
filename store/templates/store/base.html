@@ -18,7 +18,15 @@
             </section>
 
             {% if request.user.is_authenticated %}
-            <a href="{% url 'store:product_admin' %}">Product Admin</a>
+            <section class="dropdown">
+                <button class="dropbtn">Admin
+                    <i class="fa fa-caret-down"></i>
+                </button>
+                <div class="dropdown-content">
+                    <a href="{% url 'store:product_admin' %}">Product Admin</a>
+                    <a href="{% url 'store:order_admin' %}">Order Admin</a>
+                </div>
+            </section>
             <form action="/accounts/logout/" method="POST">
                 {% csrf_token%}
                 <button type="submit">Logout</button>
