@@ -5,18 +5,24 @@ from store.models import Order, OrderItem, Product, Store
 def get_products_and_quantities_from_bag(request):
     products = []
     if "bag" in request.session:
+        product_ids = [product["product_id"] for product in request.session["bag"]]
+        product_instances = Product.objects.filter(id__in=product_ids)
+
+        # Map model ids to model objects.
+        product_dict = {product.id: product for product in product_instances}
+
         for product in request.session["bag"]:
-            product_instance = Product.objects.get(id=product["product_id"])
-            products.append(
-                {
-                    "product": product_instance,
-                    "quantity": product["quantity"],
-                    "image": product_instance.image.url,
-                }
-            )
-        return products
-    else:
-        return products
+            product_instance = product_dict.get(product["product_id"])
+            if product_instance:
+                products.append(
+                    {
+                        "product": product_instance,
+                        "quantity": product["quantity"],
+                        "image": product_instance.image.url,
+                    }
+                )
+    return products
+
     
 def get_order_items_by_store(products_in_bag):
     stores = defaultdict(list)
