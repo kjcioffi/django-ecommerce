@@ -8,6 +8,7 @@ from .views import (
     ProductAdminAdd,
     checkout,
     add_to_bag,
+    order_admin_modify,
     product_admin_modify,
 )
 
@@ -30,4 +31,9 @@ urlpatterns = [
         name="product_admin_add",
     ),
     path("user-admin/store/orders", OrderAdmin.as_view(), name="order_admin"),
+    path(
+        "user-admin/store/order/modify/<int:pk>",
+        order_admin_modify,
+        name="order_admin_modify",
+    ),
 ]
