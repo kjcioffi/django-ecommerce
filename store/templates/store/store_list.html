@@ -2,9 +2,12 @@
 {% load static %}
 
 {% block content %}
+        {% for message in messages %}
+            <h2>{{ message }}</h2>
+        {% endfor %}
+
         <main class="store-list">
             {% for store in stores %}
-            
                 <section class="store">
                     <a href="{% url 'store:store_front' store_id=store.id %}">
                     {% if store.image %}

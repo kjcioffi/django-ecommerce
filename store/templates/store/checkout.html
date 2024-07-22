@@ -20,6 +20,7 @@
                         <section id="product-details">
                             <p>{{ bag_item.product.name }}</p>
                             <p>{{ bag_item.quantity}} x ${{ bag_item.product.price }}</p>
+                            <p>Sold by {{ bag_item.product.store }}</p>
                         </section>
                     {% endfor %}
                 </aside>

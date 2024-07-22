@@ -11,8 +11,10 @@ from django.contrib import messages
 from store.forms import OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 
-from store.models import OrderItem, Product, Store
+from store.models import Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
+
+from store.view_utilities import create_orders_for_stores, get_order_items_by_store, get_products_and_quantities_from_bag
 
 
 class StoreProducts(ListView):
@@ -50,14 +52,9 @@ def checkout(request):
     if request.method == "POST":
         form = OrderForm(request.POST)
         if form.is_valid():
-            order = form.save()
-
-            for bag_item in products_in_bag:
-                OrderItem.objects.create(
-                    order=order,
-                    product=bag_item["product"],
-                    quantity=bag_item["quantity"],
-                )
+            stores = get_order_items_by_store(products_in_bag)
+            order_info = form.cleaned_data
+            create_orders_for_stores(stores, order_info)
 
             request.session["bag"] = []
             request.session["total_items"] = 0
@@ -65,12 +62,12 @@ def checkout(request):
             messages.add_message(
                 request,
                 messages.SUCCESS,
-                "Order placed! Thank you for your business, "
+                "Order(s) placed! Thank you for your business, "
                 "most customers recieve their orders in 2 - 3 business days. "
                 "Please contact us if it has been more than 5 business days.",
             )
 
-            return redirect("store:index")
+            return redirect("store:store_list")
     else:
         form = OrderForm()
 
@@ -79,23 +76,6 @@ def checkout(request):
         "store/checkout.html",
         {"form": form, "products_in_bag": products_in_bag, "total_cost": total_cost},
     )
-
-
-def get_products_and_quantities_from_bag(request):
-    products = []
-    if "bag" in request.session:
-        for product in request.session["bag"]:
-            product_instance = Product.objects.get(id=product["product_id"])
-            products.append(
-                {
-                    "product": product_instance,
-                    "quantity": product["quantity"],
-                    "image": product_instance.image.url,
-                }
-            )
-        return products
-    else:
-        return products
 
 
 @require_http_methods(["POST"])

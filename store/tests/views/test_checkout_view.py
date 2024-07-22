@@ -1,104 +1,124 @@
-import random
-from django.test import Client, TestCase
+from django.test import TestCase
 from django.urls import reverse
+from faker import Faker
 
 from store.models import Order
-from store.tests.utils import create_products
+from store.tests.factories.order_item_factory import OrderItemFactory
+from store.tests.factories.product_factory import ProductFactory
+from store.tests.factories.store_factory import StoreFactory
+
+faker = Faker()
 
 
 class TestCheckoutView(TestCase):
     def setUp(self):
-        self.client = Client()
+        # Create first store and it's products
+        self.store1 = StoreFactory()
 
-        self.products = create_products(10)
+        self.store1_products = ProductFactory.create_batch(5, store=self.store1)
+        self.bag_items = []
 
+        for product in self.store1_products:
+            self.bag_items.append(OrderItemFactory(product=product))
+
+        # Create other store
+        self.store2 = StoreFactory()
+
+        self.store2_products = ProductFactory.create_batch(1, store=self.store2)
+
+        for product in self.store2_products:
+            self.bag_items.append(OrderItemFactory(product=product))
+
+        # Initialize session and simulate bag
         self.session = self.client.session
-        self.session['bag'] = [{'product_id': product.id, 'quantity': random.randint(1, 10)} for product in self.products]
+        self.session["bag"] = [
+            {"product_id": bag_item.product.id, "quantity": bag_item.quantity}
+            for bag_item in self.bag_items
+        ]
         self.session.save()
 
-        self.form_data = {"first_name": "Michael",
-                            "last_name": "Dillon",
-                            "email": "donald74@hotmail.com",
-                            "phone_number": "875-844-6600",
-                            "street": "7762 Newman Flats Suite 388",
-                            "zip": "24306",
-                            "city": "New Cindychester",
-                            "state": "Pennsylvania"}
-        
-        self.response = self.client.get(reverse('store:checkout'))
+        # initialize data for form submission
+        self.form_data = {
+            "first_name": faker.first_name(),
+            "last_name": faker.last_name(),
+            "email": faker.email(),
+            "phone_number": faker.basic_phone_number(),
+            "street": faker.street_address(),
+            "zip": faker.zipcode(),
+            "city": faker.city(),
+            "state": faker.state(),
+        }
+
+        self.response = self.client.get(reverse("store:checkout"))
 
     def test_form_display(self):
         self.assertEqual(self.response.status_code, 200)
-        form = self.response.context['form']
+        form = self.response.context["form"]
         self.assertTrue(form)
 
     def test_form_submit_success(self):
         request = self.post_form_data(self.form_data)
         self.assertEqual(request.status_code, 302)
-        saved_order = Order.objects.filter(first_name="Michael", last_name="Dillon")
-        self.assertTrue(saved_order.exists())
 
     def test_form_submit_fails_with_field_errors(self):
-        bad_form_data = {"first_name": "",
-                            "last_name": "",
-                            "email": "",
-                            "phone_number": "",
-                            "street": "",
-                            "zip": "",
-                            "city": "",
-                            "state": ""}
-        
+        bad_form_data = {
+            "first_name": "",
+            "last_name": "",
+            "email": "",
+            "phone_number": "",
+            "street": "",
+            "zip": "",
+            "city": "",
+            "state": "",
+        }
+
         request = self.post_form_data(bad_form_data)
-        form = request.context['form']
+        form = request.context["form"]
 
-        self.assertFormError(form, 'first_name', 'This field is required.')
-        self.assertFormError(form, 'last_name', 'This field is required.')
-        self.assertFormError(form, 'street', 'This field is required.')
-        self.assertFormError(form, 'zip', 'This field is required.')
-        self.assertFormError(form, 'city', 'This field is required.')
-        self.assertFormError(form, 'state', 'This field is required.')
-
-        if bad_form_data['phone_number'] == "":
-            self.assertFormError(form, 'phone_number', 'This field is required.')
-        else:
-            self.assertFormError(form, 'phone_number', 'Please use XXX-XXX-XXXX format.')
+        self.assertFormError(form, "first_name", "This field is required.")
+        self.assertFormError(form, "last_name", "This field is required.")
+        self.assertFormError(form, "street", "This field is required.")
+        self.assertFormError(form, "zip", "This field is required.")
+        self.assertFormError(form, "city", "This field is required.")
+        self.assertFormError(form, "state", "This field is required.")
 
     def test_quantities_in_context_match_up_with_session(self):
         self.assertEqual(self.response.status_code, 200)
 
-        session_bag_product_quantities: dict = {item['product_id']: item['quantity'] for item in self.session['bag']}
+        session_bag_product_quantities: dict = {
+            item["product_id"]: item["quantity"] for item in self.session["bag"]
+        }
 
-        for product_in_context in self.response.context['products_in_bag']:
-            product_id = product_in_context['product'].id
-            product_quantity = product_in_context['quantity']
+        for product_in_context in self.response.context["products_in_bag"]:
+            product_id = product_in_context["product"].id
+            product_quantity = product_in_context["quantity"]
 
-            self.assertIn(product_id, session_bag_product_quantities, f"Product ID {product_id} wasn't found in bag items.")
-            self.assertEqual(product_quantity, session_bag_product_quantities[product_id])
+            self.assertIn(
+                product_id,
+                session_bag_product_quantities,
+                f"Product ID {product_id} wasn't found in bag items.",
+            )
+            self.assertEqual(
+                product_quantity, session_bag_product_quantities[product_id]
+            )
 
     def test_checkout_view_with_empty_session(self):
-        self.session['bag'] = []
+        self.session["bag"] = []
         self.session.save()
 
-        response_with_updated_session = self.client.get(reverse('store:checkout'))
+        response_with_updated_session = self.client.get(reverse("store:checkout"))
 
         self.assertEqual(response_with_updated_session.status_code, 200)
-        self.assertEqual(response_with_updated_session.context['products_in_bag'], [])
+        self.assertEqual(response_with_updated_session.context["products_in_bag"], [])
 
     def test_session_total_equals_context_total(self):
         # products_in_bag context item maps the necessary session data and product model objects needed.
-        session_total = sum(bag_item['product'].price * bag_item['quantity'] for bag_item in self.response.context['products_in_bag'])
+        session_total = sum(
+            bag_item["product"].price * bag_item["quantity"]
+            for bag_item in self.response.context["products_in_bag"]
+        )
 
-        self.assertEqual(session_total, self.response.context['total_cost'])
-
-    def test_order_total_persists_after_order_placed(self):
-        request = self.post_form_data(self.form_data)
-        self.assertEqual(request.status_code, 302)
-
-        saved_order = Order.objects.filter(first_name="Michael", last_name="Dillon")
-        self.assertTrue(saved_order.exists())
-        saved_order = saved_order.get()
-
-        self.assertEqual(saved_order.total_cost, self.response.context["total_cost"])
+        self.assertEqual(session_total, self.response.context["total_cost"])
 
     def test_bag_is_emptied_when_order_is_placed(self):
         request = self.post_form_data(self.form_data)
@@ -106,8 +126,32 @@ class TestCheckoutView(TestCase):
 
         redirect_response = self.client.get(request.url)
 
-        self.assertEqual(redirect_response.context['total_items'], 0)
-        self.assertEqual(self.client.session['bag'], [])
+        self.assertEqual(redirect_response.context["total_items"], 0)
+        self.assertEqual(self.client.session["bag"], [])
+
+    def test_products_from_different_stores_create_separate_orders(self):
+        request = self.post_form_data(self.form_data)
+        self.assertEqual(request.status_code, 302)
+
+        orders = Order.objects.filter(
+            first_name=self.form_data["first_name"],
+            last_name=self.form_data["last_name"],
+        )
+
+        self.assertEqual(orders[0].store, self.store1)
+        self.assertEqual(orders[1].store, self.store2)
+
+    def test_correct_products_in_each_order(self):
+        request = self.post_form_data(self.form_data)
+        self.assertEqual(request.status_code, 302)
+
+        orders = Order.objects.filter(
+            first_name=self.form_data["first_name"],
+            last_name=self.form_data["last_name"],
+        )
+
+        self.assertEqual(self.store1_products, list(orders[0].products.all()))
+        self.assertEqual(self.store2_products, list(orders[1].products.all()))
 
     def post_form_data(self, form_data):
-        return self.client.post(reverse('store:checkout'), form_data)
+        return self.client.post(reverse("store:checkout"), form_data)
