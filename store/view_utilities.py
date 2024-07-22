@@ -23,7 +23,7 @@ def get_products_and_quantities_from_bag(request):
                 )
     return products
 
-    
+
 def get_order_items_by_store(products_in_bag):
     stores = defaultdict(list)
 
@@ -40,8 +40,9 @@ def get_order_items_by_store(products_in_bag):
 
         # assign or overwrite dictionary key
         stores[product_store] = order_items_from_store
-    
+
     return stores
+
 
 def create_orders_for_stores(stores, order_info):
     for store in stores:
