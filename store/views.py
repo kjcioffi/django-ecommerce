@@ -115,7 +115,7 @@ def add_to_bag(request) -> JsonResponse:
 class ProductAdmin(LoginRequiredMixin, ListView):
     model = Product
     context_object_name = "products"
-    template_name = "store/product_admin.html"
+    template_name = "store/user-admin/product/product_admin.html"
     login_url = "/accounts/login"
 
     def get_queryset(self) -> QuerySet[Product]:
@@ -159,17 +159,19 @@ def product_admin_modify(request, pk):
                 )
             return HttpResponseRedirect(reverse("store:product_admin"))
 
-    return render(request, "store/product_admin_modify.html", {"form": form})
+    return render(
+        request, "store/user-admin/product/product_admin_modify.html", {"form": form}
+    )
 
 
 class ProductAdminAdd(LoginRequiredMixin, CreateView):
     form_class = ProductAdminForm
-    template_name = "store/product_admin_add.html"
+    template_name = "store/user-admin/product/product_admin_add.html"
     success_url = reverse_lazy("store:product_admin")
 
     def form_valid(self, form):
         product = form.save(commit=False)
-        product.store = Store.objects.get(owner=self.request.user)
+        product.store = Store.objects.for_user_admin(owner=self.request.user)
         product.save()
         return super().form_valid(form)
 
