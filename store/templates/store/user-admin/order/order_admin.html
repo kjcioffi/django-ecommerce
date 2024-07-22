@@ -1,0 +1,8 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+    <h1>{{ store }}</h1>
+    {% for order in orders %}
+        <a href="{% url 'store:order_admin_modify' pk=order.pk %}">{{ order }}</p>
+    {% endfor %}
+{% endblock %}
