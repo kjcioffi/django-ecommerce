@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 
-from store.managers import ProductManager, StoreManager
+from store.managers import OrderManager, ProductManager, StoreManager
 from store.store_utils import StoreUtils
 
 
@@ -48,6 +48,8 @@ class Order(models.Model):
     zip = models.CharField(max_length=5)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
+
+    objects = OrderManager()
 
     def save(self, *args, **kwargs):
         if self.pk is None:
