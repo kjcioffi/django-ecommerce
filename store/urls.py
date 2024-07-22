@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    OrderAdmin,
     StoreList,
     StoreProducts,
     ProductDetail,
@@ -28,4 +29,5 @@ urlpatterns = [
         ProductAdminAdd.as_view(),
         name="product_admin_add",
     ),
+    path("user-admin/store/orders", OrderAdmin.as_view(), name="order_admin"),
 ]
