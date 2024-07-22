@@ -11,7 +11,7 @@ from django.contrib import messages
 from store.forms import OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 
-from store.models import Product, Store
+from store.models import Order, Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from store.view_utilities import create_orders_for_stores, get_order_items_by_store, get_products_and_quantities_from_bag
@@ -171,3 +171,21 @@ class ProductAdminAdd(LoginRequiredMixin, CreateView):
         product.store = Store.objects.get(owner=self.request.user)
         product.save()
         return super().form_valid(form)
+
+
+class OrderAdmin(LoginRequiredMixin, ListView):
+    model = Order
+    context_object_name = "orders"
+    template_name = "store/user-admin/order/order_admin.html"
+    login_url = "/accounts/login"
+
+    def get_queryset(self) -> QuerySet[Product]:
+        # return orders only from the store they own
+        store = Store.objects.for_user_admin(self.request.user)
+        return Order.objects.filter_by_store(store)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+
+        context["store"] = Store.objects.for_user_admin(owner=self.request.user)
+        return context
