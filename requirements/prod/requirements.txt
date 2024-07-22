@@ -24,8 +24,11 @@ django==5.0.6
     # via
     #   -r .\requirements\prod\requirements.in
     #   django-allauth
+    #   django-crispy-forms
     #   django-weasyprint
 django-allauth[socialaccount]==0.63.3
+    # via -r .\requirements\prod\requirements.in
+django-crispy-forms==2.3
     # via -r .\requirements\prod\requirements.in
 django-environ==0.11.2
     # via -r .\requirements\prod\requirements.in

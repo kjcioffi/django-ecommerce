@@ -5,3 +5,5 @@ psycopg2==2.9.9 # Python-PostgreSQL DB adapter
 pillow==10.3.0 # image and static file library
 django-weasyprint==2.3.0
 django-allauth[socialaccount]==0.63.3
+django-crispy-forms==2.3
+uv==0.2.27
