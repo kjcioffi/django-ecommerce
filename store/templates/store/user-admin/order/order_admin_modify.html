@@ -1,0 +1,9 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+    <form method="POST">
+        {% csrf_token %}
+        {{ form }}
+        <button name="update" type="submit">Update</button>
+        <button name="delete" type="submit">Delete</button>
+{% endblock %}
