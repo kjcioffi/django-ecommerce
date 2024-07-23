@@ -21,6 +21,6 @@ class ProductManager(models.Manager):
 class OrderManager(models.Manager):
     def filter_by_store(self, store):
         """
-        Fetches products associated with a store.
+        Fetches orders associated with a store.
         """
         return self.filter(store=store)
