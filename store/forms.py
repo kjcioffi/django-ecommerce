@@ -18,4 +18,4 @@ class ProductAdminForm(forms.ModelForm):
 class OrderAdminForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ["store"]
+        exclude = ["store", "products"]

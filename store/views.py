@@ -222,5 +222,5 @@ def order_admin_modify(request, pk):
             return HttpResponseRedirect(reverse("store:order_admin"))
 
     return render(
-        request, "store/user-admin/order/order_admin_modify.html", {"form": form}
+        request, "store/user-admin/order/order_admin_modify.html", {"form": form, "order": order}
     )
