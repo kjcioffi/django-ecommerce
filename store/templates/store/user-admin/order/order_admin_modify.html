@@ -3,7 +3,15 @@
 {% block content %}
     <form method="POST">
         {% csrf_token %}
+        {% if order.products.all %}
+            <p>Products:</p>
+        {% for product in order.products.all %}
+            <p><a href="{% url 'store:product_admin_modify' pk=product.pk %}">{{ product.name }}</a></p>
+        {% endfor %}
+        {% endif %}
+
         {{ form }}
+
         <button name="update" type="submit">Update</button>
         <button name="delete" type="submit">Delete</button>
 {% endblock %}
