@@ -212,7 +212,7 @@ def order_admin_modify(request, pk):
                 messages.add_message(
                     request,
                     messages.INFO,
-                    f"Order from {order.first_name} {order.last_name} (ID {order.pk}) successfully saved.",
+                    f"{order.name}({order.pk}) successfully saved.",
                 )
             elif "delete" in request.POST:
                 order.delete()
