@@ -16,7 +16,7 @@ class ProductAdminForm(forms.ModelForm):
 
 
 class OrderAdminForm(forms.ModelForm):
-    total_cost = forms.DecimalField(widget=forms.NumberInput(attrs={"disabled": True}))
+    total_cost = forms.DecimalField(widget=forms.NumberInput(attrs={"readonly": True}))
 
     class Meta:
         model = Order
