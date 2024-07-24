@@ -4,6 +4,7 @@ from django.forms import ModelForm
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
@@ -11,11 +12,17 @@ from django.views.decorators.http import require_http_methods
 from django.contrib import messages
 from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 
 from store.models import Order, Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from store.view_utilities import create_orders_for_stores, get_order_items_by_store, get_products_and_quantities_from_bag
+from store.view_utils import (
+    ReportingMixin,
+    create_orders_for_stores,
+    get_order_items_by_store,
+    get_products_and_quantities_from_bag,
+)
 
 
 class StoreProducts(ListView):
@@ -224,3 +231,25 @@ def order_admin_modify(request, pk):
     return render(
         request, "store/user-admin/order/order_admin_modify.html", {"form": form, "order": order}
     )
+
+
+class DownloadCustomerReport(LoginRequiredMixin, ReportingMixin, View):
+    def get(self, request, *args, **kwargs):
+        store = Store.objects.for_user_admin(self.request.user)
+        orders: QuerySet[Order] = Order.objects.filter(store=store)
+
+        header = ["Store", "First Name", "Last Name", "Email", "Phone Number"]
+        data = [
+            (
+                order.store,
+                order.first_name,
+                order.last_name,
+                order.email,
+                order.phone_number,
+            )
+            for order in orders
+        ]
+        current_datetime = timezone.now()
+        str_datetime = current_datetime.strftime("%d/%m/%Y_%H:%M:%S")
+
+        return self.generate_csv_report(f"customer_list_{str_datetime}", header, data)
