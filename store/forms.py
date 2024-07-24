@@ -2,7 +2,6 @@ from django import forms
 
 from store.models import Order, Product
 
-import re
 
 class OrderForm(forms.ModelForm):
     class Meta:
@@ -14,4 +13,11 @@ class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
         exclude = ["store"]
-    
+
+
+class OrderAdminForm(forms.ModelForm):
+    total_cost = forms.DecimalField(widget=forms.NumberInput(attrs={"disabled": True}))
+
+    class Meta:
+        model = Order
+        exclude = ["store", "products"]

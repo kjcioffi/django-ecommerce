@@ -1,5 +1,6 @@
 from typing import Any
 from django.db.models.query import QuerySet
+from django.forms import ModelForm
 from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
@@ -8,10 +9,10 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
-from store.forms import OrderForm, ProductAdminForm
+from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 
-from store.models import Product, Store
+from store.models import Order, Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from store.view_utilities import create_orders_for_stores, get_order_items_by_store, get_products_and_quantities_from_bag
@@ -171,3 +172,55 @@ class ProductAdminAdd(LoginRequiredMixin, CreateView):
         product.store = Store.objects.get(owner=self.request.user)
         product.save()
         return super().form_valid(form)
+
+
+class OrderAdmin(LoginRequiredMixin, ListView):
+    model = Order
+    context_object_name = "orders"
+    template_name = "store/user-admin/order/order_admin.html"
+    login_url = "/accounts/login"
+
+    def get_queryset(self) -> QuerySet[Product]:
+        # return orders only from the store they own
+        store = Store.objects.for_user_admin(self.request.user)
+        return Order.objects.filter_by_store(store)
+
+    def get_context_data(self, **kwargs: Any) -> dict[str, Any]:
+        context = super().get_context_data(**kwargs)
+
+        context["store"] = Store.objects.for_user_admin(owner=self.request.user)
+        return context
+
+
+@login_required
+def order_admin_modify(request, pk):
+    order = get_object_or_404(Order, pk=pk)
+
+    if order.store.owner != request.user:
+        return HttpResponseForbidden("You don't have permission to modify this order.")
+
+    form: ModelForm = OrderAdminForm(instance=order)
+
+    if request.method == "POST":
+        form: ModelForm = OrderAdminForm(request.POST, instance=order)
+
+        if form.is_valid():
+            if "update" in request.POST:
+                form.save()
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    f"Order from {order.first_name} {order.last_name} (ID {order.pk}) successfully saved.",
+                )
+            elif "delete" in request.POST:
+                order.delete()
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    f"Order from {order.first_name} {order.last_name} (ID {order.pk}) successfully deleted.",
+                )
+            return HttpResponseRedirect(reverse("store:order_admin"))
+
+    return render(
+        request, "store/user-admin/order/order_admin_modify.html", {"form": form, "order": order}
+    )
