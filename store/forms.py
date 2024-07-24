@@ -16,6 +16,8 @@ class ProductAdminForm(forms.ModelForm):
 
 
 class OrderAdminForm(forms.ModelForm):
+    total_cost = forms.DecimalField(widget=forms.NumberInput(attrs={"disabled": True}))
+
     class Meta:
         model = Order
         exclude = ["store", "products"]
