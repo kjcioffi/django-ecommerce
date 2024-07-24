@@ -1,5 +1,22 @@
 from collections import defaultdict
+import csv
+
+from django.http import HttpResponse
 from store.models import Order, OrderItem, Product, Store
+
+
+class ReportingMixin:
+    def generate_csv_report(self, filename, header, data):
+        response: HttpResponse = HttpResponse(content_type="text/csv")
+        response["Content-Disposition"] = f"attachment; filename={filename}.csv"
+
+        report = csv.writer(response)
+        report.writerow(header)
+
+        for row in data:
+            report.writerow(row)
+
+        return response
 
 
 def get_products_and_quantities_from_bag(request):
