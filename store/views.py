@@ -250,6 +250,6 @@ class DownloadCustomerReport(LoginRequiredMixin, ReportingMixin, View):
             for order in orders
         ]
         current_datetime = timezone.now()
-        str_datetime = current_datetime.strftime("%d/%m/%Y_%H:%M:%S")
+        str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
         return self.generate_csv_report(f"customer_list_{str_datetime}", header, data)
