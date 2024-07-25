@@ -38,7 +38,7 @@ urlpatterns = [
         name="order_admin_modify",
     ),
     path(
-        "user-admin/reports/customers",
+        "user-admin/reports/customers/csv",
         DownloadCustomerReport.as_view(),
         name="download_customer_report"
     )
