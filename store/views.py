@@ -338,5 +338,37 @@ class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
 
         return self.generate_csv_report(f"{store.name.lower()}_sales_report_{str_datetime}", header, data)
     
-        return self.generate_csv_report(f"sales_report_{str_datetime}", header, data)
 
+class DownloadSalesPDFReport(LoginRequiredMixin, ReportingMixin, View):
+    def get(self, request, *args, **kwargs):
+        store = Store.objects.for_user_admin(self.request.user)
+        order_items: QuerySet[OrderItem] = OrderItem.objects.filter(order__store=store)
+
+        order_data = []
+        order_cost_map = {}
+        for order_item in order_items:
+            order_id = order_item.order.id
+            total_quantity_cost = order_item.product.price * order_item.quantity
+            if order_id not in order_cost_map:
+                order_cost_map[order_id] = 0
+
+            order_data.append({
+                "order_id": order_id,
+                "product_name": order_item.product.name,
+                "product_rating": order_item.product.rating,
+                "product_price": order_item.product.price,
+                "quantity": order_item.quantity,
+                "total_quantity_cost": total_quantity_cost,
+                "percent_of_total_order": round((total_quantity_cost / order_item.order.total_cost) * 100),
+                "order_cost": order_item.order.total_cost,
+            })
+
+        data = {
+            "store": store,
+            "order_item_data": order_data
+        }
+
+        current_datetime = timezone.now()
+        str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
+
+        return self.generate_pdf_report(f"{store.name.lower()}_sales_report_{str_datetime}", "store/reports/sales.html", data)

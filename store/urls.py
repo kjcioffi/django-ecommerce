@@ -4,6 +4,7 @@ from .views import (
     DownloadCustomerReport,
     DownloadProductPDFReport,
     DownloadProductReport,
+    DownloadSalesPDFReport,
     DownloadSalesReport,
     OrderAdmin,
     StoreList,
@@ -65,5 +66,10 @@ urlpatterns = [
         "user-admin/reports/sales",
         DownloadSalesReport.as_view(),
         name="download_sales_report"
+    ),
+    path(
+        "user-admin/reports/sales/pdf",
+        DownloadSalesPDFReport.as_view(),
+        name="download_sales_pdf_report"
     ),
 ]
