@@ -293,6 +293,22 @@ class DownloadProductReport(LoginRequiredMixin, ReportingMixin, View):
         return self.generate_csv_report(f"product_list_{str_datetime}", header, data)
     
 
+class DownloadProductPDFReport(LoginRequiredMixin, ReportingMixin, View):
+    def get(self, request, *args, **kwargs):
+        store = Store.objects.for_user_admin(self.request.user)
+        products: QuerySet[Product] = Product.objects.filter(store=store)
+
+        data = {
+            "store": store,
+            "products": products
+        }
+
+        current_datetime = timezone.now()
+        str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
+
+        return self.generate_pdf_report(f"product_list_{str_datetime}", "store/reports/product.html", data)
+    
+
 class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
     def get(self, request, *args, **kwargs):
         store = Store.objects.for_user_admin(self.request.user)
