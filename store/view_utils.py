@@ -2,6 +2,8 @@ from collections import defaultdict
 import csv
 
 from django.http import HttpResponse
+from django.template.loader import render_to_string
+from weasyprint import HTML
 from store.models import Order, OrderItem, Product, Store
 
 
@@ -15,6 +17,15 @@ class ReportingMixin:
 
         for row in data:
             report.writerow(row)
+
+        return response
+    
+    def generate_pdf_report(self, filename, template_src, data, inline=True):
+        response: HttpResponse = HttpResponse(content_type="application/pdf")
+        response["Content-Disposition"] = f"{'inline' if inline else 'attachment'}; filename={filename}.pdf"
+
+        template = render_to_string(template_src, data)
+        HTML(string=template).write_pdf(response)
 
         return response
 
