@@ -14,7 +14,7 @@ from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
-from store.models import Order, Product, Store
+from store.models import Order, OrderItem, Product, Store
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 from store.view_utils import (
@@ -276,4 +276,31 @@ class DownloadProductReport(LoginRequiredMixin, ReportingMixin, View):
 
         return self.generate_csv_report(f"product_list_{str_datetime}", header, data)
     
+
+class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
+    def get(self, request, *args, **kwargs):
+        store = Store.objects.for_user_admin(self.request.user)
+        order_items: QuerySet[OrderItem] = OrderItem.objects.filter(order__store=store)
+
+
+        header = ["store", "order_id", "product_name",
+                  "product_rating", "product_price", "quantity",
+                  "total_quantity_cost", "total_order_cost"]
+        data = [
+            (
+                store,
+                order_item.order.id,
+                order_item.product.name,
+                order_item.product.rating,
+                order_item.product.price,
+                order_item.quantity,
+                order_item.product.price * order_item.quantity,
+                order_item.order.total_cost
+            )
+            for order_item in order_items
+        ]
+        current_datetime = timezone.now()
+        str_datetime = current_datetime.strftime("%d/%m/%Y_%H:%M:%S")
+
+        return self.generate_csv_report(f"sales_report_{str_datetime}", header, data)
 
