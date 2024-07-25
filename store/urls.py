@@ -42,6 +42,7 @@ urlpatterns = [
         "user-admin/reports/customers/csv",
         DownloadCustomerReport.as_view(),
         name="download_customer_report"
+    ),
     path(
         "user-admin/reports/products",
         DownloadProductReport.as_view(),
