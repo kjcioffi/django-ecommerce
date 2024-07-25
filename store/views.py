@@ -315,24 +315,28 @@ class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
         order_items: QuerySet[OrderItem] = OrderItem.objects.filter(order__store=store)
 
 
-        header = ["store", "order_id", "product_name",
+        header = ["order_id", "product_name",
                   "product_rating", "product_price", "quantity",
-                  "total_quantity_cost", "total_order_cost"]
+                  "total_quantity_cost", "percent_of_total_order", "total_order_cost"]
         data = [
             (
-                store,
                 order_item.order.id,
                 order_item.product.name,
                 order_item.product.rating,
-                order_item.product.price,
+                f"${order_item.product.price}",
                 order_item.quantity,
-                order_item.product.price * order_item.quantity,
-                order_item.order.total_cost
+                f"${order_item.product.price * order_item.quantity}",
+                f"{round(((order_item.product.price * order_item.quantity) / order_item.order.total_cost) * 100)}%",
+                f"${order_item.order.total_cost}",
             )
+
             for order_item in order_items
         ]
-        current_datetime = timezone.now()
-        str_datetime = current_datetime.strftime("%d/%m/%Y_%H:%M:%S")
 
+        current_datetime = timezone.now()
+        str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
+
+        return self.generate_csv_report(f"{store.name.lower()}_sales_report_{str_datetime}", header, data)
+    
         return self.generate_csv_report(f"sales_report_{str_datetime}", header, data)
 
