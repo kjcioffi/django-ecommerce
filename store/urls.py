@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    DownloadCustomerPDFReport,
     DownloadCustomerReport,
     DownloadProductReport,
     DownloadSalesReport,
@@ -43,6 +44,11 @@ urlpatterns = [
         "user-admin/reports/customers/csv",
         DownloadCustomerReport.as_view(),
         name="download_customer_report"
+    ),
+    path(
+        "user-admin/reports/customers/pdf",
+        DownloadCustomerPDFReport.as_view(),
+        name="download_customer_pdf_report"
     ),
     path(
         "user-admin/reports/products",

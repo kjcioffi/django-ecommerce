@@ -255,6 +255,22 @@ class DownloadCustomerReport(LoginRequiredMixin, ReportingMixin, View):
         return self.generate_csv_report(f"customer_list_{str_datetime}", header, data)
 
 
+class DownloadCustomerPDFReport(LoginRequiredMixin, ReportingMixin, View):
+    def get(self, request, *args, **kwargs):
+        store = Store.objects.for_user_admin(self.request.user)
+        orders: QuerySet[Order] = Order.objects.filter(store=store)
+
+        data = {
+            "store": store,
+            "customers": orders
+        }
+
+        current_datetime = timezone.now()
+        str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
+
+        return self.generate_pdf_report(f"customer_list_{str_datetime}", "store/reports/customer.html", data)
+
+
 class DownloadProductReport(LoginRequiredMixin, ReportingMixin, View):
     def get(self, request, *args, **kwargs):
         store = Store.objects.for_user_admin(self.request.user)

@@ -1,0 +1,21 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<table>
+    <caption><h1>{{ store }}</h1></caption>
+    <thead>
+     <tr>
+      <th>First Name
+      <th>Last Name
+      <th>Email
+      <th>Phone Number
+    {% for customer in customers %}
+     <tr> 
+      <td>{{ customer.first_name}}
+      <td>{{ customer.last_name}}
+      <td>{{ customer.email}}
+      {% if customer.phone_number %}<td>{{ customer.phone_number}}{% endif %}
+    <tr>
+    {% endfor %}
+</table>
+{% endblock %}
