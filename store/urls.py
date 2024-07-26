@@ -1,5 +1,11 @@
 from django.urls import path
 from .views import (
+    DownloadCustomerPDFReport,
+    DownloadCustomerReport,
+    DownloadProductPDFReport,
+    DownloadProductReport,
+    DownloadSalesPDFReport,
+    DownloadSalesReport,
     OrderAdmin,
     StoreList,
     StoreProducts,
@@ -35,5 +41,35 @@ urlpatterns = [
         "user-admin/store/order/modify/<int:pk>",
         order_admin_modify,
         name="order_admin_modify",
+    ),
+    path(
+        "user-admin/reports/customers/csv",
+        DownloadCustomerReport.as_view(),
+        name="download_customer_report"
+    ),
+    path(
+        "user-admin/reports/customers/pdf",
+        DownloadCustomerPDFReport.as_view(),
+        name="download_customer_pdf_report"
+    ),
+    path(
+        "user-admin/reports/products",
+        DownloadProductReport.as_view(),
+        name="download_product_report"
+    ),
+    path(
+        "user-admin/reports/products/pdf",
+        DownloadProductPDFReport.as_view(),
+        name="download_product_pdf_report"
+    ),
+    path(
+        "user-admin/reports/sales",
+        DownloadSalesReport.as_view(),
+        name="download_sales_report"
+    ),
+    path(
+        "user-admin/reports/sales/pdf",
+        DownloadSalesPDFReport.as_view(),
+        name="download_sales_pdf_report"
     ),
 ]

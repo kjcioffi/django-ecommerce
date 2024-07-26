@@ -1,0 +1,34 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<h1>Sales Report</h1>
+    <p>Store: {{ store.name }}</p>
+    <table>
+        <thead>
+            <tr>
+                <th>Order ID</th>
+                <th>Product Name</th>
+                <th>Product Rating</th>
+                <th>Product Price</th>
+                <th>Quantity</th>
+                <th>Total Quantity Cost</th>
+                <th>Percent Of Total Order</th>
+                <th>Total Cost Of Order</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order_item in order_item_data %}
+            <tr>
+                <td>{{ order_item.order_id }}</td>
+                <td>{{ order_item.product_name }}</td>
+                <td>{{ order_item.product_rating }}/10</td>
+                <td>${{ order_item.product_price }}</td>
+                <td>{{ order_item.quantity }}</td>
+                <td>{{ order_item.total_quantity_cost }}</td>
+                <td>{{ order_item.percent_of_total_order }}%</td>
+                <td>${{ order_item.order_cost }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

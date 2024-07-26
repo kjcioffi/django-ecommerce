@@ -1,0 +1,21 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<table>
+    <caption><h1>Product List for {{ store }}</h1></caption>
+    <thead>
+     <tr>
+      <th>Product Name
+      <th>Rating
+      <th>Price
+      <th>Description
+    {% for product in products %}
+        <tr> 
+         <td>{{ product.name }}
+         <td>{{ product.rating }}
+         <td>{{ product.price }}
+         <td>{{ product.description }}
+       <tr>
+    {% endfor %}
+</table>
+{% endblock %}
