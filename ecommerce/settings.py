@@ -37,7 +37,7 @@ DEBUG = env('DEBUG')
 
 DEBUG_TOOLBAR_ENABLED = DEBUG and "test" not in sys.argv
 
-ALLOWED_HOSTS = ["127.0.0.1", "localhost", "testserver"]
+ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
 
 INTERNAL_IPS = ["127.0.0.1", "localhost"]
 
