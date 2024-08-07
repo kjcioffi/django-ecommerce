@@ -1,15 +1,27 @@
+import json
 from typing import Any
 from django.db.models.query import QuerySet
 from django.forms import ModelForm
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+    HttpResponseForbidden,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+import stripe
+import environ
+
+from django.contrib.sessions.backends.db import SessionStore
+
 from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -20,9 +32,16 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from store.view_utils import (
     ReportingMixin,
     create_orders_for_stores,
+    fetch_products_and_store_objects_after_payment,
     get_order_items_by_store,
+    get_order_items_from_stripe,
     get_products_and_quantities_from_bag,
 )
+
+env = environ.Env()
+
+stripe.api_key = env("STRIPE_API_KEY")
+stripe_webhook_key: str = env("STRIPE_WEBHOOK_KEY")
 
 
 class StoreProducts(ListView):
@@ -62,20 +81,12 @@ def checkout(request):
         if form.is_valid():
             stores = get_order_items_by_store(products_in_bag)
             order_info = form.cleaned_data
-            create_orders_for_stores(stores, order_info)
+            order_info["session_key"] = request.session.session_key
 
-            request.session["bag"] = []
-            request.session["total_items"] = 0
-
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                "Order(s) placed! Thank you for your business, "
-                "most customers recieve their orders in 2 - 3 business days. "
-                "Please contact us if it has been more than 5 business days.",
-            )
-
-            return redirect("store:store_list")
+            if stripe.api_key:
+                return create_payment_session(request, order_info, products_in_bag)
+            else:
+                create_orders_for_stores(stores, order_info)
     else:
         form = OrderForm()
 
@@ -84,6 +95,119 @@ def checkout(request):
         "store/checkout.html",
         {"form": form, "products_in_bag": products_in_bag, "total_cost": total_cost},
     )
+
+
+def create_payment_session(request, order_info: dict, order_items: list):
+    line_items = [
+        {
+            "price_data": {
+                "currency": "usd",
+                "product_data": {
+                    "name": f"{order_item["product"].name} ({order_item["product"].store.name})",
+                },
+                "unit_amount": int(
+                    order_item["product"].price * 100
+                ),  # Convert to cents
+            },
+            "quantity": order_item["quantity"],
+        }
+        for order_item in order_items
+    ]
+
+    # Serialize order_items to include only necessary attributes
+    serialized_order_items = [
+        {
+            "product_id": order_item["product"].id,
+            "product_name": order_item["product"].name,
+            "store_id": order_item["product"].store.id,
+            "price": str(order_item["product"].price),
+            "quantity": order_item["quantity"],
+        }
+        for order_item in order_items
+    ]
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
+            mode="payment",
+            success_url=request.build_absolute_uri(reverse("store:store_list")),
+            cancel_url=request.build_absolute_uri(reverse("store:checkout")),
+            customer_email=order_info["email"],
+            metadata={
+                "first_name": order_info["first_name"],
+                "last_name": order_info["last_name"],
+                "email": order_info["email"],
+                "phone_number": order_info["phone_number"],
+                "street": order_info["street"],
+                "zip": order_info["zip"],
+                "city": order_info["city"],
+                "state": order_info["state"],
+                "session_key": order_info["session_key"],
+                "order_items": json.dumps(serialized_order_items),
+            },
+        )
+
+        return redirect(session.url, code=303)
+
+    except stripe.error.InvalidRequestError as e:
+        print(f"Stripe error: {e}")
+        messages.add_message(
+            request,
+            messages.ERROR,
+            "There was an error with your payment. Please try again.",
+        )
+        return redirect("store:checkout")
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        messages.add_message(
+            request,
+            messages.ERROR,
+            "An unexpected error occurred. Please try again later.",
+        )
+        return redirect("store:checkout")
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def stripe_webhook(request):
+    payload = request.body
+    event = None
+
+    try:
+        event = stripe.Event.construct_from(json.loads(payload), stripe_webhook_key)
+    except (ValueError, stripe.error.SignatureVerificationError):
+        return HttpResponse(status=400)
+
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        metadata = session["metadata"]
+        order_items = json.loads(metadata["order_items"])
+
+        stores = fetch_products_and_store_objects_after_payment(
+            get_order_items_from_stripe(order_items)
+        )
+
+        create_orders_for_stores(
+            stores,
+            first_name=metadata["first_name"],
+            last_name=metadata["last_name"],
+            email=metadata["email"],
+            phone_number=metadata["phone_number"],
+            street=metadata["street"],
+            zip=metadata["zip"],
+            city=metadata["city"],
+            state=metadata["state"],
+        )
+
+        # assign the current request session to the user's and not Stripe.
+        request.session = SessionStore(session_key=metadata["session_key"])
+        request.session["bag"] = []
+        request.session["total_items"] = 0
+        request.session.save()
+
+    return HttpResponse(status=200)
 
 
 @require_http_methods(["POST"])
@@ -329,7 +453,6 @@ class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
                 f"{round(((order_item.product.price * order_item.quantity) / order_item.order.total_cost) * 100)}%",
                 f"${order_item.order.total_cost}",
             )
-
             for order_item in order_items
         ]
 

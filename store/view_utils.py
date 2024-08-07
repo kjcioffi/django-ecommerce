@@ -19,10 +19,12 @@ class ReportingMixin:
             report.writerow(row)
 
         return response
-    
+
     def generate_pdf_report(self, filename, template_src, data, inline=True):
         response: HttpResponse = HttpResponse(content_type="application/pdf")
-        response["Content-Disposition"] = f"{'inline' if inline else 'attachment'}; filename={filename}.pdf"
+        response["Content-Disposition"] = (
+            f"{'inline' if inline else 'attachment'}; filename={filename}.pdf"
+        )
 
         template = render_to_string(template_src, data)
         HTML(string=template).write_pdf(response)
@@ -72,9 +74,30 @@ def get_order_items_by_store(products_in_bag):
     return stores
 
 
-def create_orders_for_stores(stores, order_info):
+def get_order_items_from_stripe(products_in_bag):
+    stores = defaultdict(list)
+
+    for bag_item in products_in_bag:
+        product_store: Store = bag_item["store_id"]
+
+        # fetch order items based via store model object as dict key
+        order_items_from_store: list = stores.get(product_store, [])
+
+        # Add order item to store dict object.
+        order_items_from_store.append(bag_item)
+
+        # assign or overwrite dictionary key
+        stores[product_store] = order_items_from_store
+
+    return stores
+
+
+def create_orders_for_stores(stores, **order_info):
+    orders = []
+
     for store in stores:
         bag_items: list = stores[store]
+
         order: Order = Order.objects.create(store=store, **order_info)
 
         for bag_item in bag_items:
@@ -83,3 +106,33 @@ def create_orders_for_stores(stores, order_info):
                 product=bag_item["product"],
                 quantity=bag_item["quantity"],
             )
+        orders.append(order)
+    return orders
+
+
+def fetch_products_and_store_objects_after_payment(stores: defaultdict):
+    store_ids = stores.keys()
+    store_objects = Store.objects.filter(id__in=store_ids)
+    store_mapping = {store.id: store for store in store_objects}
+
+    # Update the stores dictionary with store objects
+    new_stores = defaultdict(list)
+    for store_id, products in stores.items():
+        store_object = store_mapping.get(store_id)
+        if store_object:
+            new_stores[store_object] = products
+
+    product_ids = [
+        product["product_id"] for products in stores.values() for product in products
+    ]
+    product_objects = Product.objects.filter(id__in=product_ids)
+    product_mapping = {product.id: product for product in product_objects}
+
+    # Update the products in the new_stores dictionary with product objects
+    for store, products in new_stores.items():
+        for product in products:
+            product_object = product_mapping.get(product["product_id"])
+            if product_object:
+                product["product"] = product_object
+
+    return new_stores
