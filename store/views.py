@@ -98,6 +98,9 @@ def checkout(request):
 
 
 def create_payment_session(request, order_info: dict, order_items: list):
+    """
+    Handle the Stripe hosted page for payment processing.
+    """
     line_items = [
         {
             "price_data": {
@@ -172,6 +175,9 @@ def create_payment_session(request, order_info: dict, order_items: list):
 @csrf_exempt
 @require_http_methods(["POST"])
 def stripe_webhook(request):
+    """
+    Listens for completed payments, handles order creation, and handles session cleanup.
+    """
     payload = request.body
     event = None
 
