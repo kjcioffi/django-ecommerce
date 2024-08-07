@@ -14,8 +14,10 @@ from .views import (
     ProductAdminAdd,
     checkout,
     add_to_bag,
+    create_payment_session,
     order_admin_modify,
     product_admin_modify,
+    stripe_webhook,
 )
 
 app_name = "store"
@@ -24,6 +26,8 @@ urlpatterns = [
     path("", StoreList.as_view(), name="store_list"),
     path("store/product/<int:pk>", ProductDetail.as_view(), name="product"),
     path("checkout/", checkout, name="checkout"),
+    path("create-payment-session", create_payment_session, name="create_payment_session"),
+    path("stripe-webhook", stripe_webhook, name="stripe_webhook"),
     path("add-to-bag/", add_to_bag, name="add-to-bag"),
     path("user-admin/store/products", ProductAdmin.as_view(), name="product_admin"),
     path(
