@@ -381,6 +381,7 @@ class CreateStore(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         self.object = form.save(commit=False)
+        # ensure the owner is assigned to the current user.
         self.object.owner = self.request.user
         self.object.save()
         return super().form_valid(form)
