@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    CreateStore,
     DownloadCustomerPDFReport,
     DownloadCustomerReport,
     DownloadProductPDFReport,
@@ -20,6 +21,7 @@ from .views import (
 
 app_name = "store"
 urlpatterns = [
+    path("create-store", CreateStore.as_view(), name="create_store"),
     path("store/<int:store_id>", StoreProducts.as_view(), name="store_front"),
     path("", StoreList.as_view(), name="store_list"),
     path("store/product/<int:pk>", ProductDetail.as_view(), name="product"),

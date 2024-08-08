@@ -1,0 +1,9 @@
+{% extends "store/base.html" %}
+
+{% block content %}
+<form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form }}
+    <button type="submit">Create Store</button>
+</form>
+{% endblock %}

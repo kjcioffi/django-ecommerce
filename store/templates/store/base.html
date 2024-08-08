@@ -28,7 +28,7 @@
                             <a href="{% url 'store:order_admin' %}">Order Admin</a>
                         </div>
                     </section>
-                {% else %} {% comment "logic to create a store" %}{% {% endcomment %}
+                {% else %} {% comment "logic to create a store" %}{% endcomment %}
                     <form method="POST">
                         {% csrf_token %}
                         <a href="{% url 'store:create_store' %}">Create Store</a>
