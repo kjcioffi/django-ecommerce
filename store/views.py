@@ -22,6 +22,7 @@ import environ
 
 from django.contrib.sessions.backends.db import SessionStore
 
+from exceptions import StripeWebHookException
 from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -32,9 +33,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from store.view_utils import (
     ReportingMixin,
     create_orders_for_stores,
-    fetch_products_and_store_objects_after_payment,
     get_order_items_by_store,
-    get_order_items_from_stripe,
     get_products_and_quantities_from_bag,
 )
 
@@ -80,13 +79,12 @@ def checkout(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             stores = get_order_items_by_store(products_in_bag)
-            order_info = form.cleaned_data
-            order_info["session_key"] = request.session.session_key
 
             if stripe.api_key:
-                return create_payment_session(request, order_info, products_in_bag)
+                request.session["order_info"] = form.cleaned_data
+                return create_payment_session(request, request.session.session_key, products_in_bag)
             else:
-                create_orders_for_stores(stores, order_info)
+                create_orders_for_stores(stores, form.cleaned_data)
     else:
         form = OrderForm()
 
@@ -97,10 +95,12 @@ def checkout(request):
     )
 
 
-def create_payment_session(request, order_info: dict, order_items: list):
+def create_payment_session(request, session_key: str, order_items: list):
     """
     Handle the Stripe hosted page for payment processing.
     """
+
+    # Instantiate Stripe product and prices objects.
     line_items = [
         {
             "price_data": {
@@ -117,19 +117,8 @@ def create_payment_session(request, order_info: dict, order_items: list):
         for order_item in order_items
     ]
 
-    # Serialize order_items to include only necessary attributes
-    serialized_order_items = [
-        {
-            "product_id": order_item["product"].id,
-            "product_name": order_item["product"].name,
-            "store_id": order_item["product"].store.id,
-            "price": str(order_item["product"].price),
-            "quantity": order_item["quantity"],
-        }
-        for order_item in order_items
-    ]
-
     try:
+        order_info = request.session["order_info"]
         session = stripe.checkout.Session.create(
             payment_method_types=["card"],
             line_items=line_items,
@@ -138,16 +127,7 @@ def create_payment_session(request, order_info: dict, order_items: list):
             cancel_url=request.build_absolute_uri(reverse("store:checkout")),
             customer_email=order_info["email"],
             metadata={
-                "first_name": order_info["first_name"],
-                "last_name": order_info["last_name"],
-                "email": order_info["email"],
-                "phone_number": order_info["phone_number"],
-                "street": order_info["street"],
-                "zip": order_info["zip"],
-                "city": order_info["city"],
-                "state": order_info["state"],
-                "session_key": order_info["session_key"],
-                "order_items": json.dumps(serialized_order_items),
+                "session_key": session_key,
             },
         )
 
@@ -189,31 +169,35 @@ def stripe_webhook(request):
     if event["type"] == "checkout.session.completed":
         session = event["data"]["object"]
         metadata = session["metadata"]
-        order_items = json.loads(metadata["order_items"])
+        session_key = metadata["session_key"]
 
-        stores = fetch_products_and_store_objects_after_payment(
-            get_order_items_from_stripe(order_items)
-        )
 
-        create_orders_for_stores(
-            stores,
-            first_name=metadata["first_name"],
-            last_name=metadata["last_name"],
-            email=metadata["email"],
-            phone_number=metadata["phone_number"],
-            street=metadata["street"],
-            zip=metadata["zip"],
-            city=metadata["city"],
-            state=metadata["state"],
-        )
+        try:
+            if session_key == "" or session_key is None:
+                raise StripeWebHookException()
+                
+            else:
+                # assign the current request session to the user's and not Stripe.
+                request.session = SessionStore(session_key=session_key)
 
-        # assign the current request session to the user's and not Stripe.
-        request.session = SessionStore(session_key=metadata["session_key"])
-        request.session["bag"] = []
-        request.session["total_items"] = 0
-        request.session.save()
+                order_items = get_products_and_quantities_from_bag(request)
+                stores = get_order_items_by_store(order_items)
+                order_info = request.session.get("order_info", {})
+                create_orders_for_stores(stores, order_info)
 
-    return HttpResponse(status=200)
+                request.session["bag"] = []
+                request.session["total_items"] = 0
+                request.session.save()
+
+                return HttpResponse(status=200)
+        except StripeWebHookException:
+            messages.add_message(
+                request, 
+                messages.ERROR, 
+                "An issue occurred in the checkout process. Please try again."
+            )
+            redirect(reverse("store:checkout"))
+            return HttpResponse(status=400)
 
 
 @require_http_methods(["POST"])
