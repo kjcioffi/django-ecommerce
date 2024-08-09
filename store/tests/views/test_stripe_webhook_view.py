@@ -7,10 +7,8 @@ from django.contrib.sessions.backends.db import SessionStore
 
 
 class StripeWebHookViewTest(TestCase):
-    @patch("stripe.Event.construct_from")
-    def test_stripe_webhook(self, mock_construct_event):
-        # Mock Stripe"s webhook event
-        mock_event = {
+    def setUp(self):
+        self.mock_event = {
             "id": "evt_test_webhook",
             "type": "checkout.session.completed",
             "data": {
@@ -18,15 +16,19 @@ class StripeWebHookViewTest(TestCase):
                     "id": "cs_test_session",
                     "object": "checkout.session",
                     "metadata": {
-                        "session_id": self.client.session.session_key
+                        "session_key": self.client.session.session_key
                     }
                 }
             }
         }
-        mock_construct_event.return_value = mock_event
+    
+    @patch("stripe.Event.construct_from")
+    def test_stripe_webhook_success(self, mock_construct_event):
+        
+        mock_construct_event.return_value = self.mock_event
 
         # Make a POST request to the webhook endpoint
-        response = self.client.post(reverse("store:stripe_webhook"), data=json.dumps(mock_event), content_type="application/json")
+        response = self.client.post(reverse("store:stripe_webhook"), data=json.dumps(self.mock_event), content_type="application/json")
 
         # Verify that the webhook endpoint returns a 200 response
         self.assertEqual(response.status_code, 200)
@@ -35,3 +37,17 @@ class StripeWebHookViewTest(TestCase):
         session_store = SessionStore(session_key=self.client.session.session_key)
         self.assertEqual(session_store.get("bag"), [])
         self.assertEqual(session_store.get("total_items"), 0)
+
+    @patch("stripe.Event.construct_from")
+    def test_stripe_webhook_failure(self, mock_construct_event):
+        self.mock_event["data"]["object"]["metadata"]["session_key"] = None
+
+        breakpoint()
+
+        mock_construct_event.return_value = self.mock_event
+
+        # Make a POST request to the webhook endpoint
+        response = self.client.post(reverse("store:stripe_webhook"), data=json.dumps(self.mock_event), content_type="application/json")
+        
+        # Verify that the session isn't cleared if there's a bad session key
+        self.assertEqual(response.status_code, 400)
