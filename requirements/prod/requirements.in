@@ -7,3 +7,4 @@ django-weasyprint==2.3.0
 django-allauth[socialaccount]==0.63.3
 django-crispy-forms==2.3
 uv==0.2.27
+stripe==10.5.0

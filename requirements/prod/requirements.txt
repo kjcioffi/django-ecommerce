@@ -62,24 +62,31 @@ requests==2.32.3
     # via
     #   django-allauth
     #   requests-oauthlib
+    #   stripe
 requests-oauthlib==2.0.0
     # via django-allauth
 six==1.16.0
     # via html5lib
 sqlparse==0.5.0
     # via django
+stripe==10.5.0
+    # via -r .\requirements\prod\requirements.in
 tinycss2==1.3.0
     # via
     #   cssselect2
     #   weasyprint
 typing-extensions==4.12.2
-    # via psycopg
+    # via
+    #   psycopg
+    #   stripe
 tzdata==2024.1
     # via
     #   django
     #   psycopg
 urllib3==2.2.2
     # via requests
+uv==0.2.27
+    # via -r .\requirements\prod\requirements.in
 weasyprint==62.3
     # via django-weasyprint
 webencodings==0.5.1

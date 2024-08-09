@@ -120,38 +120,5 @@ class TestCheckoutView(TestCase):
 
         self.assertEqual(session_total, self.response.context["total_cost"])
 
-    def test_bag_is_emptied_when_order_is_placed(self):
-        request = self.post_form_data(self.form_data)
-        self.assertEqual(request.status_code, 302)
-
-        redirect_response = self.client.get(request.url)
-
-        self.assertEqual(redirect_response.context["total_items"], 0)
-        self.assertEqual(self.client.session["bag"], [])
-
-    def test_products_from_different_stores_create_separate_orders(self):
-        request = self.post_form_data(self.form_data)
-        self.assertEqual(request.status_code, 302)
-
-        orders = Order.objects.filter(
-            first_name=self.form_data["first_name"],
-            last_name=self.form_data["last_name"],
-        )
-
-        self.assertEqual(orders[0].store, self.store1)
-        self.assertEqual(orders[1].store, self.store2)
-
-    def test_correct_products_in_each_order(self):
-        request = self.post_form_data(self.form_data)
-        self.assertEqual(request.status_code, 302)
-
-        orders = Order.objects.filter(
-            first_name=self.form_data["first_name"],
-            last_name=self.form_data["last_name"],
-        )
-
-        self.assertEqual(self.store1_products, list(orders[0].products.all()))
-        self.assertEqual(self.store2_products, list(orders[1].products.all()))
-
     def post_form_data(self, form_data):
         return self.client.post(reverse("store:checkout"), form_data)

@@ -34,9 +34,8 @@ class CreateStoreViewTest(TestCase):
 
     def test_create_store_success(self):
         self.assertEqual(self.response.status_code, 302)
-        breakpoint()
         store = Store.objects.for_user_admin(self.owner)
-        self.assertTrue(store.exists())
+        self.assertTrue(store)
     
     def test_redirected_when_not_logged_in(self):
         self.client.logout()
