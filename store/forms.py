@@ -1,7 +1,12 @@
 from django import forms
 
-from store.models import Order, Product
+from store.models import Order, Product, Store
 
+
+class CreateStoreForm(forms.ModelForm):
+    class Meta:
+        model = Store
+        exclude = ["owner"]
 
 class OrderForm(forms.ModelForm):
     class Meta:
