@@ -23,7 +23,7 @@ import environ
 from django.contrib.sessions.backends.db import SessionStore
 
 from exceptions import StripeWebHookException
-from store.forms import OrderAdminForm, OrderForm, ProductAdminForm
+from store.forms import CreateStoreForm, OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
@@ -485,3 +485,16 @@ class DownloadSalesPDFReport(LoginRequiredMixin, ReportingMixin, View):
         str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
         return self.generate_pdf_report(f"{store.name.lower()}_sales_report_{str_datetime}", "store/reports/sales.html", data)
+
+
+class CreateStore(LoginRequiredMixin, CreateView):
+    form_class = CreateStoreForm
+    template_name = "store/user-admin/create_store.html"
+    success_url = reverse_lazy("store:product_admin")
+
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # ensure the owner is assigned to the current user.
+        self.object.owner = self.request.user
+        self.object.save()
+        return super().form_valid(form)

@@ -18,22 +18,29 @@
             </section>
 
             {% if request.user.is_authenticated %}
-            <section class="dropdown">
-                <button class="dropbtn">Admin
-                    <i class="fa fa-caret-down"></i>
-                </button>
-                <div class="dropdown-content">
-                    <a href="{% url 'store:product_admin' %}">Product Admin</a>
-                    <a href="{% url 'store:order_admin' %}">Order Admin</a>
-                </div>
-            </section>
+                {% if request.user.store_set.first %}
+                    <section class="dropdown">
+                        <button class="dropbtn">Admin
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <a href="{% url 'store:product_admin' %}">Product Admin</a>
+                            <a href="{% url 'store:order_admin' %}">Order Admin</a>
+                        </div>
+                    </section>
+                {% else %} {% comment "logic to create a store" %}{% endcomment %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <a href="{% url 'store:create_store' %}">Create Store</a>
+                    </form>
+                {% endif %}
             <form action="/accounts/logout/" method="POST">
                 {% csrf_token%}
                 <button type="submit">Logout</button>
             </form>
-            {% else %}
-            <a href="/accounts/login">Login</a>
-            {% endif %}
+        {% else %}
+        <a href="/accounts/login">Login</a>
+        {% endif %}
         </nav>
         {% block content %}{% endblock %}
         {% block scripts %}{% endblock %}
