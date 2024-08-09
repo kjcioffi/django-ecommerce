@@ -90,6 +90,10 @@ def checkout(request):
                     messages.INFO,
                     "Order(s) succuessfully placed. Complete payment to fulfill your order."
                 )
+
+                request.session["bag"] = []
+                request.session["total_items"] = 0
+
                 return redirect(reverse("store:store_list"))
     else:
         form = OrderForm()
