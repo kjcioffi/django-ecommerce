@@ -85,6 +85,12 @@ def checkout(request):
                 return create_payment_session(request, request.session.session_key, products_in_bag)
             else:
                 create_orders_for_stores(stores, form.cleaned_data)
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    "Order(s) succuessfully placed. Complete payment to fulfill your order."
+                )
+                return redirect(reverse("store:store_list"))
     else:
         form = OrderForm()
 
@@ -183,7 +189,11 @@ def stripe_webhook(request):
                 order_items = get_products_and_quantities_from_bag(request)
                 stores = get_order_items_by_store(order_items)
                 order_info = request.session.get("order_info", {})
-                create_orders_for_stores(stores, order_info)
+                orders = create_orders_for_stores(stores, order_info)
+
+                for order in orders:
+                    order.paid_on = timezone.now()
+                    order.save()
 
                 request.session["bag"] = []
                 request.session["total_items"] = 0
