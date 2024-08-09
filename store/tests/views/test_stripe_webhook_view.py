@@ -24,7 +24,6 @@ class StripeWebHookViewTest(TestCase):
     
     @patch("stripe.Event.construct_from")
     def test_stripe_webhook_success(self, mock_construct_event):
-        
         mock_construct_event.return_value = self.mock_event
 
         # Make a POST request to the webhook endpoint
@@ -41,8 +40,6 @@ class StripeWebHookViewTest(TestCase):
     @patch("stripe.Event.construct_from")
     def test_stripe_webhook_failure(self, mock_construct_event):
         self.mock_event["data"]["object"]["metadata"]["session_key"] = None
-
-        breakpoint()
 
         mock_construct_event.return_value = self.mock_event
 
