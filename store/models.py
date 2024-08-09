@@ -40,7 +40,7 @@ class Order(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through="OrderItem")
     total_cost = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(1.00)])
-    paid_on = models.DateTimeField(auto_now_add=True)
+    paid_on = models.DateTimeField(null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     email = models.EmailField()
