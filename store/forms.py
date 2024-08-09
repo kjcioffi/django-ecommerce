@@ -11,7 +11,7 @@ class CreateStoreForm(forms.ModelForm):
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
-        exclude = ["store", "products", "total_cost"]
+        exclude = ["store", "products", "total_cost", "paid_on"]
 
 
 class ProductAdminForm(forms.ModelForm):
