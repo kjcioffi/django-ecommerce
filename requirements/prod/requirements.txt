@@ -6,6 +6,12 @@
 #
 asgiref==3.8.1
     # via django
+boto3==1.34.158
+    # via -r .\requirements\prod\requirements.in
+botocore==1.34.158
+    # via
+    #   boto3
+    #   s3transfer
 brotli==1.1.0
     # via fonttools
 certifi==2024.7.4
@@ -24,11 +30,8 @@ django==5.0.6
     # via
     #   -r .\requirements\prod\requirements.in
     #   django-allauth
-    #   django-crispy-forms
     #   django-weasyprint
 django-allauth[socialaccount]==0.63.3
-    # via -r .\requirements\prod\requirements.in
-django-crispy-forms==2.3
     # via -r .\requirements\prod\requirements.in
 django-environ==0.11.2
     # via -r .\requirements\prod\requirements.in
@@ -40,6 +43,10 @@ html5lib==1.1
     # via weasyprint
 idna==3.7
     # via requests
+jmespath==1.0.1
+    # via
+    #   boto3
+    #   botocore
 oauthlib==3.2.2
     # via requests-oauthlib
 pillow==10.3.0
@@ -58,6 +65,8 @@ pyjwt[crypto]==2.8.0
     # via django-allauth
 pyphen==0.15.0
     # via weasyprint
+python-dateutil==2.9.0.post0
+    # via botocore
 requests==2.32.3
     # via
     #   django-allauth
@@ -65,8 +74,12 @@ requests==2.32.3
     #   stripe
 requests-oauthlib==2.0.0
     # via django-allauth
+s3transfer==0.10.2
+    # via boto3
 six==1.16.0
-    # via html5lib
+    # via
+    #   html5lib
+    #   python-dateutil
 sqlparse==0.5.0
     # via django
 stripe==10.5.0
@@ -84,9 +97,9 @@ tzdata==2024.1
     #   django
     #   psycopg
 urllib3==2.2.2
-    # via requests
-uv==0.2.27
-    # via -r .\requirements\prod\requirements.in
+    # via
+    #   botocore
+    #   requests
 weasyprint==62.3
     # via django-weasyprint
 webencodings==0.5.1
@@ -94,5 +107,7 @@ webencodings==0.5.1
     #   cssselect2
     #   html5lib
     #   tinycss2
+whitenoise==6.7.0
+    # via -r .\requirements\prod\requirements.in
 zopfli==0.2.3
     # via fonttools
