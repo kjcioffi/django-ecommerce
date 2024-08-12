@@ -9,14 +9,14 @@ from .base import (
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env('SECRET_KEY')
+SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-WORKING_ENV = env('WORKING_ENV', default="ecommerce.settings.dev")
+WORKING_ENV = env("WORKING_ENV", default="ecommerce.settings.dev")
 
 DEBUG = True
 
-if env('WORKING_ENV', default="ecommerce.settings.dev") != "ecommerce.settings.dev":
+if env("WORKING_ENV", default="ecommerce.settings.dev") != "ecommerce.settings.dev":
     DEBUG = False
 
 DEBUG_TOOLBAR_ENABLED = DEBUG and "test" not in sys.argv
@@ -36,8 +36,8 @@ DATABASES = {
 }
 
 if DEBUG_TOOLBAR_ENABLED:
-    INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+    INSTALLED_APPS += ["debug_toolbar"]
+    MIDDLEWARE += ["debug_toolbar.middleware.DebugToolbarMiddleware"]
 
-STATICFILES_STORAGE="whitenoise.storage.CompressedManifestStaticFilesStorage"
-DEFAULT_FILE_STORAGE="django.core.files.storage.FileSystemStorage"
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
