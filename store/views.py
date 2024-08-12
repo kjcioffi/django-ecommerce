@@ -1,15 +1,28 @@
+import json
 from typing import Any
 from django.db.models.query import QuerySet
 from django.forms import ModelForm
-from django.http import HttpResponseRedirect, JsonResponse, HttpResponseForbidden
+from django.http import (
+    HttpResponse,
+    HttpResponseRedirect,
+    JsonResponse,
+    HttpResponseForbidden,
+)
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse, reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views import View
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import CreateView
 from django.views.decorators.http import require_http_methods
 from django.contrib import messages
+import stripe
+import environ
+
+from django.contrib.sessions.backends.db import SessionStore
+
+from exceptions import StripeWebHookException
 from store.forms import CreateStoreForm, OrderAdminForm, OrderForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -23,6 +36,11 @@ from store.view_utils import (
     get_order_items_by_store,
     get_products_and_quantities_from_bag,
 )
+
+env = environ.Env()
+
+stripe.api_key = env("STRIPE_API_KEY")
+stripe_webhook_key: str = env("STRIPE_WEBHOOK_KEY")
 
 
 class StoreProducts(ListView):
@@ -61,21 +79,22 @@ def checkout(request):
         form = OrderForm(request.POST)
         if form.is_valid():
             stores = get_order_items_by_store(products_in_bag)
-            order_info = form.cleaned_data
-            create_orders_for_stores(stores, order_info)
 
-            request.session["bag"] = []
-            request.session["total_items"] = 0
+            if stripe.api_key:
+                request.session["order_info"] = form.cleaned_data
+                return create_payment_session(request, request.session.session_key, products_in_bag)
+            else:
+                create_orders_for_stores(stores, form.cleaned_data)
+                messages.add_message(
+                    request,
+                    messages.INFO,
+                    "Order(s) succuessfully placed. Complete payment to fulfill your order."
+                )
 
-            messages.add_message(
-                request,
-                messages.SUCCESS,
-                "Order(s) placed! Thank you for your business, "
-                "most customers recieve their orders in 2 - 3 business days. "
-                "Please contact us if it has been more than 5 business days.",
-            )
+                request.session["bag"] = []
+                request.session["total_items"] = 0
 
-            return redirect("store:store_list")
+                return redirect(reverse("store:store_list"))
     else:
         form = OrderForm()
 
@@ -84,6 +103,115 @@ def checkout(request):
         "store/checkout.html",
         {"form": form, "products_in_bag": products_in_bag, "total_cost": total_cost},
     )
+
+
+def create_payment_session(request, session_key: str, order_items: list):
+    """
+    Handle the Stripe hosted page for payment processing.
+    """
+
+    # Instantiate Stripe product and prices objects.
+    line_items = [
+        {
+            "price_data": {
+                "currency": "usd",
+                "product_data": {
+                    "name": f"{order_item["product"].name} ({order_item["product"].store.name})",
+                },
+                "unit_amount": int(
+                    order_item["product"].price * 100
+                ),  # Convert to cents
+            },
+            "quantity": order_item["quantity"],
+        }
+        for order_item in order_items
+    ]
+
+    try:
+        order_info = request.session["order_info"]
+        session = stripe.checkout.Session.create(
+            payment_method_types=["card"],
+            line_items=line_items,
+            mode="payment",
+            success_url=request.build_absolute_uri(reverse("store:store_list")),
+            cancel_url=request.build_absolute_uri(reverse("store:checkout")),
+            customer_email=order_info["email"],
+            metadata={
+                "session_key": session_key,
+            },
+        )
+
+        return redirect(session.url, code=303)
+
+    except stripe.error.InvalidRequestError as e:
+        print(f"Stripe error: {e}")
+        messages.add_message(
+            request,
+            messages.ERROR,
+            "There was an error with your payment. Please try again.",
+        )
+        return redirect("store:checkout")
+
+    except Exception as e:
+        print(f"Unexpected error: {e}")
+        messages.add_message(
+            request,
+            messages.ERROR,
+            "An unexpected error occurred. Please try again later.",
+        )
+        return redirect("store:checkout")
+
+
+@csrf_exempt
+@require_http_methods(["POST"])
+def stripe_webhook(request):
+    """
+    Listens for completed payments, handles order creation, and handles session cleanup.
+    """
+    payload = request.body
+    event = None
+
+    try:
+        event = stripe.Event.construct_from(json.loads(payload), stripe_webhook_key)
+    except (ValueError, stripe.error.SignatureVerificationError):
+        return HttpResponse(status=400)
+
+    if event["type"] == "checkout.session.completed":
+        session = event["data"]["object"]
+        metadata = session["metadata"]
+        session_key = metadata["session_key"]
+
+
+        try:
+            if session_key == "" or session_key is None:
+                raise StripeWebHookException()
+                
+            else:
+                # assign the current request session to the user's and not Stripe.
+                request.session = SessionStore(session_key=session_key)
+
+                order_items = get_products_and_quantities_from_bag(request)
+                stores = get_order_items_by_store(order_items)
+                order_info = request.session.get("order_info", {})
+                orders = create_orders_for_stores(stores, order_info)
+
+                for order in orders:
+                    order.paid_on = timezone.now()
+                    order.save()
+
+                request.session["bag"] = []
+                request.session["total_items"] = 0
+                request.session.save()
+
+                return HttpResponse(status=200)
+        except StripeWebHookException:
+            messages.add_message(
+                request, 
+                messages.ERROR, 
+                "An issue occurred in the checkout process. Please try again."
+            )
+            redirect(reverse("store:checkout"))
+            return HttpResponse(status=400)
 
 
 @require_http_methods(["POST"])
@@ -329,7 +457,6 @@ class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
                 f"{round(((order_item.product.price * order_item.quantity) / order_item.order.total_cost) * 100)}%",
                 f"${order_item.order.total_cost}",
             )
-
             for order_item in order_items
         ]
 

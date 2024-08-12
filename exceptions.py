@@ -1,0 +1,2 @@
+class StripeWebHookException(Exception):
+    pass

@@ -19,10 +19,12 @@ class ReportingMixin:
             report.writerow(row)
 
         return response
-    
+
     def generate_pdf_report(self, filename, template_src, data, inline=True):
         response: HttpResponse = HttpResponse(content_type="application/pdf")
-        response["Content-Disposition"] = f"{'inline' if inline else 'attachment'}; filename={filename}.pdf"
+        response["Content-Disposition"] = (
+            f"{'inline' if inline else 'attachment'}; filename={filename}.pdf"
+        )
 
         template = render_to_string(template_src, data)
         HTML(string=template).write_pdf(response)
@@ -71,10 +73,12 @@ def get_order_items_by_store(products_in_bag):
 
     return stores
 
-
 def create_orders_for_stores(stores, order_info):
+    orders = []
+
     for store in stores:
         bag_items: list = stores[store]
+
         order: Order = Order.objects.create(store=store, **order_info)
 
         for bag_item in bag_items:
@@ -83,3 +87,6 @@ def create_orders_for_stores(stores, order_info):
                 product=bag_item["product"],
                 quantity=bag_item["quantity"],
             )
+        orders.append(order)
+    return orders
+
