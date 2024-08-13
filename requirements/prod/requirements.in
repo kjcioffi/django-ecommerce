@@ -7,4 +7,5 @@ django-weasyprint==2.3.0
 django-allauth[socialaccount]==0.63.3
 stripe==10.5.0
 boto3==1.34.158
+django-storages[s3]==1.14.4
 whitenoise==6.7.0
