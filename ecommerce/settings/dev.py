@@ -1,11 +1,4 @@
 import sys
-from .base import (
-    env,
-    BASE_DIR,
-    INSTALLED_APPS,
-    MIDDLEWARE,
-)
-
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -13,8 +6,6 @@ SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 WORKING_ENV = env("WORKING_ENV", default="ecommerce.settings.dev")
-
-DEBUG = True
 
 if env("WORKING_ENV", default="ecommerce.settings.dev") != "ecommerce.settings.dev":
     DEBUG = False
