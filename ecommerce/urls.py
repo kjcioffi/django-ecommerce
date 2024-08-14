@@ -25,5 +25,7 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("", include(("store.urls", "store"), namespace="store")),
-    path("__debug__/", include("debug_toolbar.urls")),
 ] + static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)
+
+if base.DEBUG:
+    urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
