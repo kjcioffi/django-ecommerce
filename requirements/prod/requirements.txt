@@ -44,6 +44,8 @@ django-weasyprint==2.3.0
     # via -r .\requirements\prod\requirements.in
 fonttools[woff]==4.53.0
     # via weasyprint
+gunicorn==23.0.0
+    # via -r .\requirements\prod\requirements.in
 html5lib==1.1
     # via weasyprint
 idna==3.7
@@ -54,6 +56,8 @@ jmespath==1.0.1
     #   botocore
 oauthlib==3.2.2
     # via requests-oauthlib
+packaging==24.1
+    # via gunicorn
 pillow==10.3.0
     # via
     #   -r .\requirements\prod\requirements.in
