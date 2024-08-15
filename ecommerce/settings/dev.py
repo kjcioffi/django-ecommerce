@@ -1,4 +1,5 @@
 import sys
+import os
 from .base import *
 
 # SECURITY WARNING: keep the secret key used in production secret!
@@ -32,3 +33,10 @@ if DEBUG_TOOLBAR_ENABLED:
 
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 DEFAULT_FILE_STORAGE = "django.core.files.storage.FileSystemStorage"
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.2/howto/static-files/
+STATIC_URL = "static/"
+MEDIA_URL = "media/"
+STATIC_ROOT = os.path.join("static")
+MEDIA_ROOT = os.path.join("media")
