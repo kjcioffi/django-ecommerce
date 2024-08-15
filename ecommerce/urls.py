@@ -19,13 +19,14 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 
-from ecommerce.settings import base
+from ecommerce.settings import base, dev
 
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("accounts/", include("allauth.urls")),
     path("", include(("store.urls", "store"), namespace="store")),
-] + static(base.MEDIA_URL, document_root=base.MEDIA_ROOT)
+]
 
 if base.DEBUG:
     urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
+    urlpatterns += static(dev.MEDIA_URL, document_root=dev.MEDIA_ROOT)
