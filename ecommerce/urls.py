@@ -19,7 +19,7 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 
-from ecommerce.settings import base, dev
+from ecommerce.settings import dev
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -27,6 +27,6 @@ urlpatterns = [
     path("", include(("store.urls", "store"), namespace="store")),
 ]
 
-if base.DEBUG:
+if dev.DEBUG:
     urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]
     urlpatterns += static(dev.MEDIA_URL, document_root=dev.MEDIA_ROOT)

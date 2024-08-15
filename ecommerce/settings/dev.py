@@ -6,6 +6,8 @@ from .base import *
 SECRET_KEY = env("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
 WORKING_ENV = env("WORKING_ENV", default="ecommerce.settings.dev")
 
 if env("WORKING_ENV", default="ecommerce.settings.dev") != "ecommerce.settings.dev":
