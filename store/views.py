@@ -116,7 +116,7 @@ def create_payment_session(request, session_key: str, order_items: list):
             "price_data": {
                 "currency": "usd",
                 "product_data": {
-                    "name": f"{order_item["product"].name} ({order_item["product"].store.name})",
+                    "name": f"{order_item['product'].name} ({order_item['product'].store.name})",
                 },
                 "unit_amount": int(
                     order_item["product"].price * 100

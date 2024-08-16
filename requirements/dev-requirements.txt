@@ -64,5 +64,7 @@ traitlets==5.14.3
     #   matplotlib-inline
 tzdata==2024.1
     # via django
+waitress==3.0.0
+    # via -r .\requirements\dev-requirements.in
 wcwidth==0.2.13
     # via prompt-toolkit
