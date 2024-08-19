@@ -6,7 +6,13 @@ on:
     branches:
       - 30-review-overview-on-github-actions-and-complete-the-following-tasks
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+  
 jobs:
+
   lint:
     runs-on: ubuntu-latest
 
