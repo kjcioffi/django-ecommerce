@@ -2,9 +2,8 @@ name: CI pipeline
 
 on:
   pull_request:
-  push:
     branches:
-      - 30-review-overview-on-github-actions-and-complete-the-following-tasks
+      - main
 
 permissions:
   contents: write
