@@ -73,6 +73,7 @@ def get_order_items_by_store(products_in_bag):
 
     return stores
 
+
 def create_orders_for_stores(stores, order_info):
     orders = []
 
@@ -89,4 +90,3 @@ def create_orders_for_stores(stores, order_info):
             )
         orders.append(order)
     return orders
-

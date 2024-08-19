@@ -12,7 +12,9 @@ class Store(models.Model):
     category = models.CharField(max_length=30)
     city = models.CharField(max_length=25)
     state = models.CharField(max_length=25)
-    image = models.ImageField(upload_to=StoreUtils.generate_store_image_path, blank=True)
+    image = models.ImageField(
+        upload_to=StoreUtils.generate_store_image_path, blank=True
+    )
 
     objects = StoreManager()
 
@@ -39,7 +41,9 @@ class Product(models.Model):
 class Order(models.Model):
     store = models.ForeignKey(Store, on_delete=models.CASCADE)
     products = models.ManyToManyField(Product, through="OrderItem")
-    total_cost = models.DecimalField(max_digits=10, decimal_places=2, validators=[MinValueValidator(1.00)])
+    total_cost = models.DecimalField(
+        max_digits=10, decimal_places=2, validators=[MinValueValidator(1.00)]
+    )
     paid_on = models.DateTimeField(null=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
@@ -59,7 +63,7 @@ class Order(models.Model):
 
     def __str__(self):
         return f"Order #{self.id}"
-    
+
 
 class OrderItem(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
@@ -68,12 +72,14 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f"{self.quantity} of {self.product.name} in {self.order}"
-    
+
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
         order = self.order
-        total_cost = sum(order_item.quantity * order_item.product.price for order_item in order.orderitem_set.all())
+        total_cost = sum(
+            order_item.quantity * order_item.product.price
+            for order_item in order.orderitem_set.all()
+        )
         order.total_cost = total_cost
         order.save()
-        

@@ -82,13 +82,15 @@ def checkout(request):
 
             if stripe.api_key:
                 request.session["order_info"] = form.cleaned_data
-                return create_payment_session(request, request.session.session_key, products_in_bag)
+                return create_payment_session(
+                    request, request.session.session_key, products_in_bag
+                )
             else:
                 create_orders_for_stores(stores, form.cleaned_data)
                 messages.add_message(
                     request,
                     messages.INFO,
-                    "Order(s) succuessfully placed. Complete payment to fulfill your order."
+                    "Order(s) succuessfully placed. Complete payment to fulfill your order.",
                 )
 
                 request.session["bag"] = []
@@ -181,11 +183,10 @@ def stripe_webhook(request):
         metadata = session["metadata"]
         session_key = metadata["session_key"]
 
-
         try:
             if session_key == "" or session_key is None:
                 raise StripeWebHookException()
-                
+
             else:
                 # assign the current request session to the user's and not Stripe.
                 request.session = SessionStore(session_key=session_key)
@@ -206,9 +207,9 @@ def stripe_webhook(request):
                 return HttpResponse(status=200)
         except StripeWebHookException:
             messages.add_message(
-                request, 
-                messages.ERROR, 
-                "An issue occurred in the checkout process. Please try again."
+                request,
+                messages.ERROR,
+                "An issue occurred in the checkout process. Please try again.",
             )
             redirect(reverse("store:checkout"))
             return HttpResponse(status=400)
@@ -270,8 +271,10 @@ def product_admin_modify(request, pk):
     product = get_object_or_404(Product, pk=pk)
 
     if product.store.owner != request.user:
-        return HttpResponseForbidden("You don't have permission to modify this product.")
-    
+        return HttpResponseForbidden(
+            "You don't have permission to modify this product."
+        )
+
     form = ProductAdminForm(instance=product)
 
     if request.method == "POST":
@@ -294,7 +297,9 @@ def product_admin_modify(request, pk):
                 )
             return HttpResponseRedirect(reverse("store:product_admin"))
 
-    return render(request, "store/user-admin/product/product_admin_modify.html", {"form": form})
+    return render(
+        request, "store/user-admin/product/product_admin_modify.html", {"form": form}
+    )
 
 
 class ProductAdminAdd(LoginRequiredMixin, CreateView):
@@ -357,7 +362,9 @@ def order_admin_modify(request, pk):
             return HttpResponseRedirect(reverse("store:order_admin"))
 
     return render(
-        request, "store/user-admin/order/order_admin_modify.html", {"form": form, "order": order}
+        request,
+        "store/user-admin/order/order_admin_modify.html",
+        {"form": form, "order": order},
     )
 
 
@@ -388,15 +395,14 @@ class DownloadCustomerPDFReport(LoginRequiredMixin, ReportingMixin, View):
         store = Store.objects.for_user_admin(self.request.user)
         orders: QuerySet[Order] = Order.objects.filter(store=store)
 
-        data = {
-            "store": store,
-            "customers": orders
-        }
+        data = {"store": store, "customers": orders}
 
         current_datetime = timezone.now()
         str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
-        return self.generate_pdf_report(f"customer_list_{str_datetime}", "store/reports/customer.html", data)
+        return self.generate_pdf_report(
+            f"customer_list_{str_datetime}", "store/reports/customer.html", data
+        )
 
 
 class DownloadProductReport(LoginRequiredMixin, ReportingMixin, View):
@@ -411,7 +417,7 @@ class DownloadProductReport(LoginRequiredMixin, ReportingMixin, View):
                 product.name,
                 product.rating,
                 product.price,
-                product.description
+                product.description,
             )
             for product in products
         ]
@@ -419,33 +425,38 @@ class DownloadProductReport(LoginRequiredMixin, ReportingMixin, View):
         str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
         return self.generate_csv_report(f"product_list_{str_datetime}", header, data)
-    
+
 
 class DownloadProductPDFReport(LoginRequiredMixin, ReportingMixin, View):
     def get(self, request, *args, **kwargs):
         store = Store.objects.for_user_admin(self.request.user)
         products: QuerySet[Product] = Product.objects.filter(store=store)
 
-        data = {
-            "store": store,
-            "products": products
-        }
+        data = {"store": store, "products": products}
 
         current_datetime = timezone.now()
         str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
-        return self.generate_pdf_report(f"product_list_{str_datetime}", "store/reports/product.html", data)
-    
+        return self.generate_pdf_report(
+            f"product_list_{str_datetime}", "store/reports/product.html", data
+        )
+
 
 class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
     def get(self, request, *args, **kwargs):
         store = Store.objects.for_user_admin(self.request.user)
         order_items: QuerySet[OrderItem] = OrderItem.objects.filter(order__store=store)
 
-
-        header = ["order_id", "product_name",
-                  "product_rating", "product_price", "quantity",
-                  "total_quantity_cost", "percent_of_total_order", "total_order_cost"]
+        header = [
+            "order_id",
+            "product_name",
+            "product_rating",
+            "product_price",
+            "quantity",
+            "total_quantity_cost",
+            "percent_of_total_order",
+            "total_order_cost",
+        ]
         data = [
             (
                 order_item.order.id,
@@ -463,8 +474,10 @@ class DownloadSalesReport(LoginRequiredMixin, ReportingMixin, View):
         current_datetime = timezone.now()
         str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
-        return self.generate_csv_report(f"{store.name.lower()}_sales_report_{str_datetime}", header, data)
-    
+        return self.generate_csv_report(
+            f"{store.name.lower()}_sales_report_{str_datetime}", header, data
+        )
+
 
 class DownloadSalesPDFReport(LoginRequiredMixin, ReportingMixin, View):
     def get(self, request, *args, **kwargs):
@@ -479,26 +492,31 @@ class DownloadSalesPDFReport(LoginRequiredMixin, ReportingMixin, View):
             if order_id not in order_cost_map:
                 order_cost_map[order_id] = 0
 
-            order_data.append({
-                "order_id": order_id,
-                "product_name": order_item.product.name,
-                "product_rating": order_item.product.rating,
-                "product_price": order_item.product.price,
-                "quantity": order_item.quantity,
-                "total_quantity_cost": total_quantity_cost,
-                "percent_of_total_order": round((total_quantity_cost / order_item.order.total_cost) * 100),
-                "order_cost": order_item.order.total_cost,
-            })
+            order_data.append(
+                {
+                    "order_id": order_id,
+                    "product_name": order_item.product.name,
+                    "product_rating": order_item.product.rating,
+                    "product_price": order_item.product.price,
+                    "quantity": order_item.quantity,
+                    "total_quantity_cost": total_quantity_cost,
+                    "percent_of_total_order": round(
+                        (total_quantity_cost / order_item.order.total_cost) * 100
+                    ),
+                    "order_cost": order_item.order.total_cost,
+                }
+            )
 
-        data = {
-            "store": store,
-            "order_item_data": order_data
-        }
+        data = {"store": store, "order_item_data": order_data}
 
         current_datetime = timezone.now()
         str_datetime = current_datetime.strftime("%d_%m_%Y_%H:%M:%S")
 
-        return self.generate_pdf_report(f"{store.name.lower()}_sales_report_{str_datetime}", "store/reports/sales.html", data)
+        return self.generate_pdf_report(
+            f"{store.name.lower()}_sales_report_{str_datetime}",
+            "store/reports/sales.html",
+            data,
+        )
 
 
 class CreateStore(LoginRequiredMixin, CreateView):

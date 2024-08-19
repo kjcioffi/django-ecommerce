@@ -2,7 +2,6 @@ from django.test import TestCase
 from django.urls import reverse
 from faker import Faker
 
-from store.models import Order
 from store.tests.factories.order_item_factory import OrderItemFactory
 from store.tests.factories.product_factory import ProductFactory
 from store.tests.factories.store_factory import StoreFactory

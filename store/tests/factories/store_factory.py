@@ -9,6 +9,7 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 faker: Faker = Faker()
 faker.add_provider(faker_commerce.Provider)
 
+
 class StoreFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Store

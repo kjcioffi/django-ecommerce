@@ -12,7 +12,6 @@ faker.add_provider(faker_commerce.Provider)
 
 
 class CreateStoreViewTest(TestCase):
-
     def setUp(self):
         self.owner = UserFactory()
 
@@ -24,10 +23,10 @@ class CreateStoreViewTest(TestCase):
             "city": faker.city(),
             "state": faker.state(),
             "image": SimpleUploadedFile(
-                        name="test_image.jpeg",
-                        content=open("media/tests/test_file.png", "rb").read(),
-                        content_type="image/jpeg",
-                    )
+                name="test_image.jpeg",
+                content=open("media/tests/test_file.png", "rb").read(),
+                content_type="image/jpeg",
+            ),
         }
 
         self.response = self.client.post(reverse("store:create_store"), data=self.data)
@@ -36,7 +35,7 @@ class CreateStoreViewTest(TestCase):
         self.assertEqual(self.response.status_code, 302)
         store = Store.objects.for_user_admin(self.owner)
         self.assertTrue(store)
-    
+
     def test_redirected_when_not_logged_in(self):
         self.client.logout()
         response = self.client.get(reverse("store:create_store"))

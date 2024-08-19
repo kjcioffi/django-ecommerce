@@ -6,6 +6,7 @@ from store.tests.factories.product_factory import ProductFactory
 from store.tests.factories.store_factory import StoreFactory
 from store.tests.factories.user_factory import UserFactory
 
+
 class TestProductAdminModifyView(TestCase):
     def setUp(self):
         self.owner = UserFactory()
@@ -16,5 +17,7 @@ class TestProductAdminModifyView(TestCase):
     def test_customer_cannot_modify_products(self):
         self.client.login(username=self.customer.username, password="")
 
-        response = self.client.get(reverse("store:product_admin_modify", kwargs={"pk": self.product.pk}))
+        response = self.client.get(
+            reverse("store:product_admin_modify", kwargs={"pk": self.product.pk})
+        )
         self.assertIsInstance(response, HttpResponseForbidden)
