@@ -34,6 +34,7 @@ Simply setup and manage the store, we'll handle the rest. From payments and sale
     *Fill in the environment file with the required variables.*
 
     **An optional way to create a Django secret key**:
+
     ```bash
     python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
     ```
@@ -52,7 +53,9 @@ Simply setup and manage the store, we'll handle the rest. From payments and sale
     pip-sync requirements\prod\requirements.txt requirements\dev-requirements.txt
     ```
 
-6. **Run the development server**:
+6. **Setup Weasyprint** (<https://doc.courtbouillon.org/weasyprint/stable/first_steps.html>)
+
+7. **Run the development server**:
 
     ```bash
     python manage.py runserver
