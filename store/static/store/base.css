@@ -38,8 +38,8 @@ body {
 }
 
 .dropdown-content {
-    display: none;
-    position: absolute;
+    display: none; /* hidden unless hovered over */
+    position: absolute; /* prevent container from moving */
     background-color: #f1f1f1;
     min-inline-size: 160px;
     border-radius: 12px;
