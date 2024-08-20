@@ -1,53 +1,61 @@
 # ContempoCrafts E-Commerce Application
 
-Welcome to ContempoCrafts, an ambitious e-commerce application that combines functionality, aesthetics, and user experience into a seamless digital shopping platform. Crafted over a focused 14-day development sprint, this project is a testament to the power of modern web technologies.
+## Project Overview
 
-## Explore ContempoCrafts
+### A craftsmen, are you?
 
-### Application Showcase
+***Turn your passion*** and experience with the art of making **into a side hustle**. ContempoCrafts is a online platform (Software as a Service) that sells your handcrafted goods in minutes.
 
-- **Homepage**: A welcoming first glance into our product world, designed for immediate engagement and ease of navigation.
+Simply setup and manage the store, we'll handle the rest. From payments and sales reports to the website hosting.
 
-![Homepage](homepage-display.png)
+# Running ContempoCrafts locally
 
-- **Product Detail**: Each product's story is intricately detailed, providing users with all the information they need to make informed decisions.
-  
-![Product Detail](product-detail-display.png)
+1. **Clone the repository**:
 
-- **Checkout**: A streamlined and intuitive checkout process, ensuring a pleasant conclusion to the shopping experience.
-  
-![Checkout](checkout-display.png)
+    ```bash
+    git clone [repository-url]
+    cd django-ecommerce
+    ```
 
-## Project Insights
+2. **Create Stripe account**:
 
-### Time Allocated
-- A mere **14 days** were allocated to transition from concept to MVP, highlighting efficient project management and development practices.
+    i. Create your Stripe account: <https://dashboard.stripe.com/register>
 
-### Tech Stack
-- **Django & PostgreSQL**: For robust backend functionality and data management.
-- **HTML & CSS (Grid and Flexbox)**: Crafting responsive and aesthetically pleasing layouts.
-- **Vanilla JavaScript / Document Object Model API**: Enhancing the frontend with dynamic content and interactive elements.
+    ii. Create an API key <`STRIPE_API_KEY`>: <https://dashboard.stripe.com/test/apikeys>
 
-## Core Features
+    iii. Create a Webhook with a key <`STRIPE_WEBOOK_KEY`>: <https://dashboard.stripe.com/test/apikeys>
 
-### E-Commerce MVP Design
-- A comprehensive system encompassing a product bag, detailed product pages, and a checkout process, meticulously designed to cater to the end-user's shopping experience.
+3. **Set up environment variables:**
 
-### Dynamic Bag/Checkout System
-- Utilizing JavaScript for real-time updates and Django for session-based storage, we've created an intuitive shopping bag system that effortlessly scales across user sessions.
+    ```
+    mv .env-template .env
+    ```
 
-### Responsive Web Design
-- Employing CSS Grid and Flexbox, the application adapts fluidly across devices, offering a consistent user experience regardless of the viewing platform.
+    *Fill in the environment file with the required variables.*
 
-## Behind the Scenes: Implementation Journey
+    **An optional way to create a Django secret key**:
+    ```bash
+    python -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+    ```
 
-- **AJAX and Django**: A harmonious integration enabling dynamic content updates without page reloads, improving the user experience by leaps and bounds.
-- **Django's ORM and Model Complexity**: Leveraging Django's powerful ORM to manage complex data relationships, showcasing the application's robust data architecture.
+4. **(Recommended) Create a virtual environment:**
 
-## Future Roadmap
+    ```bash
+    python -m pip install pip-tools
+    python -m venv venv
+    source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+    ```
 
-- Introduction of **payment integration**, **advanced accessibility features**, and **mobile optimization**, ensuring ContempoCrafts remains at the forefront of e-commerce innovation.
+5. **Install dependencies:**
 
-## Reflecting on the Journey
+    ```bash
+    pip-sync requirements\prod\requirements.txt requirements\dev-requirements.txt
+    ```
 
-This project was not just a demonstration of technical skill but a significant learning experience. It challenged preconceived notions, demanded innovative solutions, and ultimately, fostered a deeper understanding of what it means to build meaningful software in today's digital age.
+6. **Run the development server**:
+
+    ```bash
+    python manage.py runserver
+    ```
+
+You should now be able to access the application at <http://localhost:8000>.
