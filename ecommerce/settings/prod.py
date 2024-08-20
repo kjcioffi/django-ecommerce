@@ -38,6 +38,5 @@ STORAGES = {
     "staticfiles": {
         "BACKEND": "storages.backends.s3boto3.S3ManifestStaticStorage",
         "LOCATION": "static",
-    }
+    },
 }
-

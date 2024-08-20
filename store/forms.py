@@ -8,6 +8,7 @@ class CreateStoreForm(forms.ModelForm):
         model = Store
         exclude = ["owner"]
 
+
 class OrderForm(forms.ModelForm):
     class Meta:
         model = Order

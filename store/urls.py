@@ -28,7 +28,9 @@ urlpatterns = [
     path("", StoreList.as_view(), name="store_list"),
     path("store/product/<int:pk>", ProductDetail.as_view(), name="product"),
     path("checkout/", checkout, name="checkout"),
-    path("create-payment-session", create_payment_session, name="create_payment_session"),
+    path(
+        "create-payment-session", create_payment_session, name="create_payment_session"
+    ),
     path("stripe-webhook", stripe_webhook, name="stripe_webhook"),
     path("add-to-bag/", add_to_bag, name="add-to-bag"),
     path("user-admin/store/products", ProductAdmin.as_view(), name="product_admin"),
@@ -51,31 +53,31 @@ urlpatterns = [
     path(
         "user-admin/reports/customers/csv",
         DownloadCustomerReport.as_view(),
-        name="download_customer_report"
+        name="download_customer_report",
     ),
     path(
         "user-admin/reports/customers/pdf",
         DownloadCustomerPDFReport.as_view(),
-        name="download_customer_pdf_report"
+        name="download_customer_pdf_report",
     ),
     path(
         "user-admin/reports/products",
         DownloadProductReport.as_view(),
-        name="download_product_report"
+        name="download_product_report",
     ),
     path(
         "user-admin/reports/products/pdf",
         DownloadProductPDFReport.as_view(),
-        name="download_product_pdf_report"
+        name="download_product_pdf_report",
     ),
     path(
         "user-admin/reports/sales",
         DownloadSalesReport.as_view(),
-        name="download_sales_report"
+        name="download_sales_report",
     ),
     path(
         "user-admin/reports/sales/pdf",
         DownloadSalesPDFReport.as_view(),
-        name="download_sales_pdf_report"
+        name="download_sales_pdf_report",
     ),
 ]

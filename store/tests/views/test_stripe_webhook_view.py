@@ -15,19 +15,21 @@ class StripeWebHookViewTest(TestCase):
                 "object": {
                     "id": "cs_test_session",
                     "object": "checkout.session",
-                    "metadata": {
-                        "session_key": self.client.session.session_key
-                    }
+                    "metadata": {"session_key": self.client.session.session_key},
                 }
-            }
+            },
         }
-    
+
     @patch("stripe.Event.construct_from")
     def test_stripe_webhook_success(self, mock_construct_event):
         mock_construct_event.return_value = self.mock_event
 
         # Make a POST request to the webhook endpoint
-        response = self.client.post(reverse("store:stripe_webhook"), data=json.dumps(self.mock_event), content_type="application/json")
+        response = self.client.post(
+            reverse("store:stripe_webhook"),
+            data=json.dumps(self.mock_event),
+            content_type="application/json",
+        )
 
         # Verify that the webhook endpoint returns a 200 response
         self.assertEqual(response.status_code, 200)
@@ -44,7 +46,11 @@ class StripeWebHookViewTest(TestCase):
         mock_construct_event.return_value = self.mock_event
 
         # Make a POST request to the webhook endpoint
-        response = self.client.post(reverse("store:stripe_webhook"), data=json.dumps(self.mock_event), content_type="application/json")
-        
+        response = self.client.post(
+            reverse("store:stripe_webhook"),
+            data=json.dumps(self.mock_event),
+            content_type="application/json",
+        )
+
         # Verify that the session isn't cleared if there's a bad session key
         self.assertEqual(response.status_code, 400)

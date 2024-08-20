@@ -1,5 +1,3 @@
-from decimal import Decimal
-import random
 import factory
 
 from store.models import Order
