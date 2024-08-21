@@ -9,23 +9,23 @@
     </head>
     <body>
         <nav class="menu">
-            <a href="{% url 'store:store_list' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
+            <a class="navlink" href="{% url 'store:store_list' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
             <aside>ContempoCrafts</aside>
             <a href="{% url 'store:store_list' %}">About Us</a>
             <section id="bag">
-                <a href="{% url 'store:checkout' %}"><img id="bag-icon" src="{% static 'store/images/shopping_bag.png' %}"></a>
+                <a class="navlink" href="{% url 'store:checkout' %}"><img id="bag-icon" src="{% static 'store/images/shopping_bag.png' %}"></a>
                 <p class="bag-quantity">{{ total_items }}</p>
             </section>
 
             {% if request.user.is_authenticated %}
                 {% if request.user.store_set.first %}
                     <section class="dropdown">
-                        <button class="dropbtn">Admin
+                        <button class="dropbtn navbtn">Admin
                             <i class="fa fa-caret-down"></i>
                         </button>
                         <div class="dropdown-content">
-                            <a href="{% url 'store:product_admin' %}">Manage Products</a>
-                            <a href="{% url 'store:order_admin' %}">Manage Orders</a>
+                            <a class="navlink" href="{% url 'store:product_admin' %}">Manage Products</a>
+                            <a class="navlink" href="{% url 'store:order_admin' %}">Manage Orders</a>
                         </div>
                     </section>
                 {% else %} {% comment "logic to create a store" %}{% endcomment %}
@@ -36,10 +36,10 @@
                 {% endif %}
             <form action="/accounts/logout/" method="POST">
                 {% csrf_token%}
-                <button type="submit">Logout</button>
+                <button id="logout" class="navbtn" type="submit">Logout</button>
             </form>
         {% else %}
-        <a href="/accounts/login">Login</a>
+        <a id="login" class="navlink" href="/accounts/login">Login</a>
         {% endif %}
         </nav>
         {% block content %}{% endblock %}
