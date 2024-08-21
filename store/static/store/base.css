@@ -11,21 +11,21 @@ body {
     justify-content: space-around;
     align-items: center;
     background-color: #ffffff;
-    color: #003366; /* Dark blue text */
+    color: #003366;
     padding-block: 10px;
     margin-block-end: 20px;
     border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25); /* Subtle shadow for depth */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
 }
 
 .menu a {
-    color: #003366; /* Dark blue text for links */
+    color: #003366;
     text-decoration: none;
     transition: color 0.3s;
 }
 
 .menu a:hover {
-    color: #0056b3; /* Slightly brighter blue on hover */
+    color: #0056b3;
 }
 
 #bag {
@@ -51,14 +51,14 @@ body {
     padding-block: 12px;
     border-radius: 12px;
     border: none;
-    background-color: #0056b3; /* Medium blue button */
-    color: #ffffff; /* White text */
+    background-color: #0056b3;
+    color: #ffffff;
     cursor: pointer;
     transition: background-color 0.3s, color 0.3s;
 }
 
 .dropbtn:hover {
-    background-color: #003366; /* Darker blue on hover */
+    background-color: #003366;
     color: #ffffff;
 }
 
@@ -70,8 +70,8 @@ body {
 .dropdown-content {
     display: none;
     position: absolute;
-    background-color: #ffffff; /* White background for dropdown */
-    color: #003366; /* Dark blue text */
+    background-color: #ffffff;
+    color: #003366;
     min-inline-size: 160px;
     border-radius: 12px;
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
@@ -89,8 +89,8 @@ body {
 }
 
 .dropdown-content a:hover {
-    background-color: #e0e8f9; /* Light blue background on hover */
-    color: #003366; /* Maintain dark blue text */
+    background-color: #e0e8f9;
+    color: #003366;
 }
 
 .dropdown:hover .dropdown-content {
@@ -102,8 +102,8 @@ body {
 }
 
 .navbtn:hover {
-    background-color: #0056b3; /* Medium blue on hover */
-    color: #ffffff; /* White text on hover */
+    background-color: #0056b3;
+    color: #ffffff;
 }
 
 #logout {
