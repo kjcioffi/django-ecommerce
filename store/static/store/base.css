@@ -1,5 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Nanum+Myeongjo&display=swap');
+
 body {
     box-sizing: border-box;
+    font-family: 'Nanum Myeongjo', sans-serif;
     max-inline-size: 1200px;
     margin-inline: auto;
     background-color: #e0e8f9;
@@ -34,6 +37,11 @@ body {
     align-items: center;
     padding-inline-end: 10px;
     border-radius: 10px;
+}
+
+#bag a {
+    display: flex;
+    align-items: center;
 }
 
 #bag:hover {
