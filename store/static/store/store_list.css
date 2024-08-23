@@ -1,0 +1,69 @@
+body h1 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-block-start: 3rem;
+}
+
+.store-list {
+    margin-block-start: 2rem;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    align-items: center;
+    gap: 40px 50px;
+}
+
+.store {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(135deg, #e0e8ff 0%, #d0d9f2 100%);
+    border-radius: 5px; /* Coverage for when no store image is provided. */
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .25);
+    min-block-size: 350px;
+}
+
+.store-name {
+    color: #2c3e50;
+}
+
+.store a {
+    text-decoration: none;
+}
+
+.store .store-image {
+    max-inline-size: 100%;
+    object-fit: cover;
+    border-radius: 5px 5px 0 0;
+}
+    
+
+.store-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    max-inline-size: 100%;
+    border-radius: 0 0 5px 5px;
+    color: #000000;
+}
+
+.store-info > * {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.25em;
+}
+
+.store-category {
+    color: #1f2e4a;
+}
+
+.message {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: black;
+}
