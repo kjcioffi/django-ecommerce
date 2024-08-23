@@ -1,11 +1,16 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/store_products.css' %}">
+{% endblock %}
+
 {% block content %}
-<main class="products">
+{% if products %}
+<main id="products">
     {% for product in products %}
         <section class="product">
-            <a href="{% url 'store:product' pk=product.pk %}"><img src="{{ product.image.url }}" alt="{{ product.name }}"></a>
+            <a href="{% url 'store:product' pk=product.pk %}"><img id="product-image" src="{{ product.image.url }}" alt="{{ product.name }}"></a>
             <div class="product-info">
                 <h2 class="product-name">{{ product.name }}</h2>
                 <p class="product-rating">{{ product.rating }}/10</p>
@@ -14,6 +19,9 @@
         </section>
     {% endfor %}
 </main>
+{% else %}
+<h1 id="product-header">No Products For Sale!</h1>
+{% endif %}
 {% endblock %}
 
 {% block scripts %}
