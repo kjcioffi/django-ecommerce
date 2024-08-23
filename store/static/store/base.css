@@ -78,6 +78,7 @@ body {
 .dropdown-content {
     display: none;
     position: absolute;
+    padding-inline: 1.25em;
     background-color: #ffffff;
     color: #003366;
     min-inline-size: 160px;
