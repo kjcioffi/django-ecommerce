@@ -1,28 +1,36 @@
 {% extends 'store/base.html' %}
 {% load static %}
 
-{% block content %}
-        {% for message in messages %}
-            <h2>{{ message }}</h2>
-        {% endfor %}
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/store_list.css' %}">
+{% endblock %}
 
-        <main class="store-list">
-            {% for store in stores %}
-                <section class="store">
-                    <a href="{% url 'store:store_front' store_id=store.id %}">
+{% block content %}
+    {% for message in messages %}
+    <h2 class="message">{{ message }}</h2>
+    {% endfor %}
+    {% if stores %}
+    <h1>Available Stores</h1>
+    <main class="store-list">
+        {% for store in stores %}
+            <section class="store">
+                <a href="{% url 'store:store_front' store_id=store.id %}">
                     {% if store.image %}
                     <img src="{{ store.image.url }}" alt="{{ store.name }}" class="store-image">
                     {% else %}
                     <img src="{% static 'store/images/logo.png' %}" alt="{{ store.name }}" class="store-image">
                     {% endif %}
-                    </a>
+                    
                     
                     <div class="store-info">
                         <h2 class="store-name">{{ store.name }}</h2>
                         <p class="store-category">{{ store.category }}</p>
                     </div>
-                </section>
-            </a>
-            {% endfor %}
-        </main>
+                </a>
+            </section>
+        {% endfor %}
+    </main>
+    {% else %}
+    <h1>No stores are currently available. Please check back later</h1>
+    {% endif %}
 {% endblock %}
