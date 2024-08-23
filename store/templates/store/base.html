@@ -24,8 +24,18 @@
                             <i class="fa fa-caret-down"></i>
                         </button>
                         <div class="dropdown-content">
+                            <h4>Store Management</h4>
                             <a class="navlink" href="{% url 'store:product_admin' %}">Manage Products</a>
                             <a class="navlink" href="{% url 'store:order_admin' %}">Manage Orders</a>
+                            <h4>Customer Reports</h4>
+                            <a class="navlink" href="{% url 'store:download_customer_report' %}">CSV</a>
+                            <a class="navlink" href="{% url 'store:download_customer_pdf_report' %}">PDF</a>
+                            <h4>Product Reports</h4>
+                            <a class="navlink" href="{% url 'store:download_product_report' %}">CSV</a>
+                            <a class="navlink" href="{% url 'store:download_product_pdf_report' %}">PDF</a>
+                            <h4>Sales Reports</h4>
+                            <a class="navlink" href="{% url 'store:download_sales_report' %}">CSV</a>
+                            <a class="navlink" href="{% url 'store:download_sales_pdf_report' %}">PDF</a>
                         </div>
                     </section>
                 {% else %} {% comment "logic to create a store" %}{% endcomment %}
