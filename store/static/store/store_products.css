@@ -1,0 +1,62 @@
+#product-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-block-start: 3rem;
+}
+
+#products {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-items: center;
+    align-items: center;
+    gap: 30px 0;
+    margin-block-start: 3rem;
+}
+
+#product-image {
+    max-inline-size: 300px;
+    border-radius: 5px 5px 0 0;
+}
+
+.product {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background: linear-gradient(135deg, #e0e8ff 0%, #d0d9f2 100%);
+    border-radius: 5px;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .25);
+    min-block-size: 350px;
+    padding-block-end: 1.25rem;
+}
+
+.product-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.product-info .product-name {
+    margin-block-end: .25em;
+}
+
+#add-to-bag {
+    cursor: pointer;
+    padding-inline: 1.25em;
+    padding-block: 1em;
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0, .5);
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+}
+
+#add-to-bag:hover {
+    transition: color 0.3s;
+    background-color: #0056b3;
+    
+}
+
+#add-to-bag:active {
+    background-color: #04448a;
+}
