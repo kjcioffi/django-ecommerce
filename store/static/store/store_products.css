@@ -41,22 +41,3 @@
 .product-info .product-name {
     margin-block-end: .25em;
 }
-
-#add-to-bag {
-    cursor: pointer;
-    padding-inline: 1.25em;
-    padding-block: 1em;
-    border-radius: 5px;
-    border: 1px solid rgb(0, 0, 0, .5);
-    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
-}
-
-#add-to-bag:hover {
-    transition: color 0.3s;
-    background-color: #0056b3;
-    
-}
-
-#add-to-bag:active {
-    background-color: #04448a;
-}

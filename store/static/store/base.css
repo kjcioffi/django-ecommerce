@@ -138,6 +138,27 @@ body {
     color: #e0e8f9;
 }
 
+#add-to-bag {
+    cursor: pointer;
+    padding-inline: 1.25em;
+    padding-block: 1em;
+    border-radius: 5px;
+    border: 1px solid rgb(0, 0, 0, .5);
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+}
+
+#add-to-bag:hover {
+    transition: background-color .5s;
+    background-color: #0056b3;
+    transition: color .5s;
+    color: white;
+}
+
+#add-to-bag:active {
+    background-color: #04448a;
+    border: none;
+}
+
 @media screen and (max-width: 800px) {
     #logo, #bag-icon {
         inline-size: 35px;
