@@ -1,27 +1,34 @@
 .product {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    margin-inline: 1.5rem;
-    margin-block-end: 1.5rem;
+    margin-inline: 3rem;
+    margin-block: 3rem;
+    gap: 0 2rem;
 }
 
 .product img {
     inline-size: 100%;
-    border-radius: 15px;
     block-size: auto;
+    border-radius: 10px;
+    block-size: auto;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
 }
 
 .product-details {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
     padding-inline-start: 10px;
+    background-color: #c0c8e6;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+    padding-inline: 2rem;
 }
 
 #add-to-bag {
-    display: block;
-    font-size: x-large;
-    block-size: 5rem;
-    inline-size: 75%;
-    margin-inline: auto;
-    margin-block-end: 1.5rem;
-    border-radius: 2.5rem;
-    cursor: pointer;
+    inline-size: 10rem;
+    margin-block-start: 1.5rem;
+    margin-block-end: 2rem;
+    height: auto;
 }
