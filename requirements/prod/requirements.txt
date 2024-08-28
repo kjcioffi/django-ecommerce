@@ -24,6 +24,8 @@ cffi==1.16.0
     #   weasyprint
 charset-normalizer==3.3.2
     # via requests
+crispy-bootstrap4==2024.1
+    # via -r .\requirements\prod\requirements.in
 cryptography==42.0.8
     # via pyjwt
 cssselect2==0.7.0
@@ -31,11 +33,17 @@ cssselect2==0.7.0
 django==5.0.6
     # via
     #   -r .\requirements\prod\requirements.in
+    #   crispy-bootstrap4
     #   django-allauth
+    #   django-crispy-forms
     #   django-storages
     #   django-weasyprint
 django-allauth[socialaccount]==0.63.3
     # via -r .\requirements\prod\requirements.in
+django-crispy-forms==2.3
+    # via
+    #   -r .\requirements\prod\requirements.in
+    #   crispy-bootstrap4
 django-environ==0.11.2
     # via -r .\requirements\prod\requirements.in
 django-storages[s3]==1.14.4
