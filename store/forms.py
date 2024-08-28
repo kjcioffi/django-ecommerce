@@ -21,12 +21,12 @@ class OrderForm(forms.ModelForm):
         super(OrderForm, self).__init__(*args, **kwargs)
         self.helper = FormHelper()
         self.helper.form_show_labels = False
-        self.helper.form_class = 'form-horizontal'
+        self.helper.form_class = "form-horizontal"
         self.helper.layout = Layout(
-            Field('first_name', id="first_name", placeholder='First Name'),
-            Field('last_name', id="last_name", placeholder='Last Name'),
-            Field('email', id="email", placeholder="Email"),
-            Field('phone_number', id="phone_number", placeholder="Phone Number"),
+            Field("first_name", id="first_name", placeholder="First Name"),
+            Field("last_name", id="last_name", placeholder="Last Name"),
+            Field("email", id="email", placeholder="Email"),
+            Field("phone_number", id="phone_number", placeholder="Phone Number"),
             Field("street", id="street", placeholder="Street"),
             Field("city", id="city", placeholder="City"),
             Field("state", id="state", placeholder="State"),
