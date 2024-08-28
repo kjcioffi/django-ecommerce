@@ -84,9 +84,8 @@ main {
 
 #empty-bag {
     text-align: center;
-    font-size: 1.25rem;
     color: #777;
-    margin-bottom: 2rem;
+    margin-block-start: 3rem;
 }
 
 /* Total Price */
