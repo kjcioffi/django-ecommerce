@@ -1,9 +1,15 @@
 {% extends "store/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/user-admin/create-store.css' %}">
+{% endblock %}
 
 {% block content %}
-<form method="POST" enctype="multipart/form-data">
+<form id="store-form" method="POST" enctype="multipart/form-data">
+    <h1>Start Your Selling Your Handcrafted Goods!</h1>
     {% csrf_token %}
-    {{ form }}
-    <button type="submit">Create Store</button>
+    {% crispy form %}
 </form>
 {% endblock %}

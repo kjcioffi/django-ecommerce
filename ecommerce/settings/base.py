@@ -120,4 +120,6 @@ USE_TZ = True
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+# Crispy Forms
+
 CRISPY_TEMPLATE_PACK = "bootstrap4"
