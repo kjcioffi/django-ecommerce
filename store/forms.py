@@ -3,6 +3,9 @@ from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Field, Submit
 from store.models import Order, Product, Store
 
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout, Field, Submit
+
 
 class CreateStoreForm(forms.ModelForm):
     class Meta:
@@ -28,6 +31,23 @@ class OrderForm(forms.ModelForm):
     class Meta:
         model = Order
         exclude = ["store", "products", "total_cost", "paid_on"]
+
+    def __init__(self, *args, **kwargs):
+        super(OrderForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+        self.helper.form_class = "form-horizontal"
+        self.helper.layout = Layout(
+            Field("first_name", id="first_name", placeholder="First Name"),
+            Field("last_name", id="last_name", placeholder="Last Name"),
+            Field("email", id="email", placeholder="Email"),
+            Field("phone_number", id="phone_number", placeholder="Phone Number"),
+            Field("street", id="street", placeholder="Street"),
+            Field("city", id="city", placeholder="City"),
+            Field("state", id="state", placeholder="State"),
+            Field("zip", id="zip", placeholder="Zip"),
+            Submit("place-order", "Place Order", id="place-order"),
+        )
 
 
 class ProductAdminForm(forms.ModelForm):

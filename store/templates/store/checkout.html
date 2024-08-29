@@ -1,4 +1,5 @@
 {% extends 'store/base.html' %}
+{% load crispy_forms_tags %}
 {% load static %}
 
     {% block stylesheet %}<link rel="stylesheet" href="{% static 'store/checkout.css' %}">{% endblock %}
@@ -6,12 +7,12 @@
 {% block content %}
     {% if products_in_bag %}    
         <main>
-            <form id="order-form" method="POST">
-                {% csrf_token %}
-                <h3>Contact and Shipping Information</h3>
-                {{ form }}
-                <button id="place-order" type="submit">Place Order</button>
-            </form>
+            <section class="order-info">
+                <h1>Contact and Shipping Information</h1>
+                <form id="order-form" method="POST">
+                    {% crispy form %}
+                </form>
+            </section>
             <section id="bag-contents">
                 <h1>Bag Contents</h1>
                 <aside>
