@@ -1,0 +1,65 @@
+#product-form {
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-inline: 50px;
+    padding-block: 30px;
+}
+
+#product-form h1 {
+    margin-block-end: 1.25rem;
+}
+
+#product-form input, #product-form textarea {
+    inline-size: 500px;
+    padding-block: .75rem;
+    font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-block-end: 1.5rem;
+    transition: border-color 0.3s ease-in-out;
+}
+
+#product-form input:not(#submit-id-delete):focus, #product-form textarea:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+
+#product-form input:not([type="text"], [type="number"]), #submit-id-update {
+    background-color: #007bff;
+    color: #fff;
+    padding-block: .75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+}
+
+#product-form input:not([type="text"], [type="number"]):hover, #submit-id-update:hover {
+    background-color: #0056b3;
+}
+
+#product-form input:not([type="text"], [type="number"]):active, #submit-id-update:hover {
+    background-color: #04448a;
+    border: none;
+}
+
+#submit-id-delete {
+    background-color: #ff2600 !important;
+}
+
+#submit-id-delete:hover {
+    background-color: #c42307 !important;
+    border: none;
+}
+
+#submit-id-delete:active {
+    background-color: #9b1b04 !important;
+}
