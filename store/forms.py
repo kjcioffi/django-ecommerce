@@ -47,7 +47,6 @@ class OrderForm(forms.ModelForm):
             Submit("place-order", "Place Order", id="place-order"),
         )
 
-
 class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
@@ -91,8 +90,30 @@ class ProductAddAdminForm(ProductAdminForm):
 
 
 class OrderAdminForm(forms.ModelForm):
-    total_cost = forms.DecimalField(widget=forms.NumberInput(attrs={"readonly": True}))
-
     class Meta:
         model = Order
         exclude = ["store", "products"]
+
+    def __init__(self, *args, **kwargs):
+        super(OrderAdminForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_class = "form-horizontal"
+        self.helper.layout = Layout(
+            Field("total_cost", readonly=True, placeholder="Total Cost"),
+            Field("paid_on", placeholder="Paid On (mm-dd-yyy hh:dd:ss)"),
+            Field("first_name", id="first_name", placeholder="First Name"),
+            Field("last_name", id="last_name", placeholder="Last Name"),
+            Field("email", id="email", placeholder="Email"),
+            Field("phone_number", id="phone_number", placeholder="Phone Number"),
+            Field("street", id="street", placeholder="Street"),
+            Field("city", id="city", placeholder="City"),
+            Field("state", id="state", placeholder="State"),
+            Field("zip", id="zip", placeholder="Zip"),
+            Submit("update", "Save", id="update-product"),
+            Submit(
+                "delete",
+                "Delete",
+                onclick="return confirm('Are you sure you wish to delete this order?')",
+                id="delete-product",
+            ),
+        )
