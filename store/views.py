@@ -23,7 +23,13 @@ import environ
 from django.contrib.sessions.backends.db import SessionStore
 
 from exceptions import StripeWebHookException
-from store.forms import CreateStoreForm, OrderAdminForm, OrderForm, ProductAddAdminForm, ProductAdminForm
+from store.forms import (
+    CreateStoreForm,
+    OrderAdminForm,
+    OrderForm,
+    ProductAddAdminForm,
+    ProductAdminForm,
+)
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 

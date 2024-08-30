@@ -66,12 +66,13 @@ class ProductAdminForm(forms.ModelForm):
             Field("image", id="image", placeholder="Image"),
             Submit("update", "Save", id="update-product"),
             Submit(
-                    "delete",
-                    "Delete", 
-                    onclick="return confirm('Are you sure you wish to delete this item?')", 
-                    id="delete-product"
-                  ),
+                "delete",
+                "Delete",
+                onclick="return confirm('Are you sure you wish to delete this item?')",
+                id="delete-product",
+            ),
         )
+
 
 class ProductAddAdminForm(ProductAdminForm):
     def __init__(self, *args, **kwargs):
