@@ -1,11 +1,17 @@
 {% extends 'store/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/user-admin/product/product_admin.css' %}">
+{% endblock %}
 
 {% block content %}
 
-<form method="POST" enctype="multipart/form-data">
+<form id="product-form" method="POST" enctype="multipart/form-data">
+    <h1>Create a Product</h1>
     {% csrf_token %}
-    {{form}}
-    <button type="submit">Add <i class="fa-solid fa-plus"></i></button>
+    {% crispy form %}
 </form>
 
 {% endblock %}

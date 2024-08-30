@@ -1,10 +1,15 @@
 {% extends 'store/base.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/user-admin/product/product_admin.css' %}">
+{% endblock %}
 
 {% block content %}
-    <form method="POST" enctype="multipart/form-data">
+    <form id="product-form" method="POST" enctype="multipart/form-data">
+        <h1>Update Product Page</h1>
         {% csrf_token %}
-        {{ form }}
-        <button name="update" type="submit">Save</button>
-        <button name="delete" type="submit" onclick="return confirm('Are you sure you wish to delete this item?')">Delete</button>
+        {% crispy form %}
     </form>
 {% endblock %}
