@@ -23,7 +23,7 @@ import environ
 from django.contrib.sessions.backends.db import SessionStore
 
 from exceptions import StripeWebHookException
-from store.forms import CreateStoreForm, OrderAdminForm, OrderForm, ProductAdminForm
+from store.forms import CreateStoreForm, OrderAdminForm, OrderForm, ProductAddAdminForm, ProductAdminForm
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 
@@ -303,7 +303,7 @@ def product_admin_modify(request, pk):
 
 
 class ProductAdminAdd(LoginRequiredMixin, CreateView):
-    form_class = ProductAdminForm
+    form_class = ProductAddAdminForm
     template_name = "store/user-admin/product/product_admin_add.html"
     success_url = reverse_lazy("store:product_admin")
 

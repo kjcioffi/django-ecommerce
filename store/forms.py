@@ -64,6 +64,27 @@ class ProductAdminForm(forms.ModelForm):
             Field("price", id="price", placeholder="Price"),
             Field("description", id="description", placeholder="Description"),
             Field("image", id="image", placeholder="Image"),
+            Submit("update", "Save", id="update-product"),
+            Submit(
+                    "delete",
+                    "Delete", 
+                    onclick="return confirm('Are you sure you wish to delete this item?')", 
+                    id="delete-product"
+                  ),
+        )
+
+class ProductAddAdminForm(ProductAdminForm):
+    def __init__(self, *args, **kwargs):
+        super(ProductAddAdminForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.form_show_labels = False
+        self.helper.form_class = "form-horizontal"
+        self.helper.layout = Layout(
+            Field("name", id="name", placeholder="Name"),
+            Field("rating", id="rating", placeholder="Rating"),
+            Field("price", id="price", placeholder="Price"),
+            Field("description", id="description", placeholder="Description"),
+            Field("image", id="image", placeholder="Image"),
             Submit("add-product", "Add Product", id="add-product"),
         )
 
