@@ -309,7 +309,7 @@ class ProductAdminAdd(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         product = form.save(commit=False)
-        product.store = Store.objects.get(owner=self.request.user)
+        product.store = Store.objects.for_user_admin(owner=self.request.user)
         product.save()
         return super().form_valid(form)
 
