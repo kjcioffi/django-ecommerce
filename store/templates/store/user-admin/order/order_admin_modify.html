@@ -1,17 +1,32 @@
 {% extends "store/base.html" %}
+{% load crispy_forms_tags %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/user-admin/order/order_admin.css' %}">
+{% endblock %}
 
 {% block content %}
-    <form method="POST">
-        {% csrf_token %}
-        {% if order.products.all %}
-            <p>Products:</p>
-        {% for product in order.products.all %}
-            <p><a href="{% url 'store:product_admin_modify' pk=product.pk %}">{{ product.name }}</a></p>
-        {% endfor %}
-        {% endif %}
-
-        {{ form }}
-
-        <button name="update" type="submit">Update</button>
-        <button name="delete" type="submit">Delete</button>
+    <section id="order-panel">
+        
+        <article id="order-details">
+            {% if order.products.all.exists %}
+                <u><h1>Products in Order</h1></u>
+                {% for product in order.products.all %}
+                    <strong class="product"><a href="{% url 'store:product_admin_modify' pk=product.pk %}">{{ product.name }}</a></strong>
+                {% endfor %}
+            {% else %}
+                <u><h1 id="no-products">No Products Associated With This Order.</h1></u>
+                <p>They were removed from the store.</p>
+            {% endif %}
+            
+            <section id="products">
+                
+            </section>
+        </article>
+        <form id="order-form" method="POST">
+            {% csrf_token %}
+            {% crispy form %}
+        </form>
+    </section>
 {% endblock %}

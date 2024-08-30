@@ -1,0 +1,84 @@
+#order-panel {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    padding-inline: 40px;
+    padding-block: 30px;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+}
+
+#order-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 1.25rem;
+    border-radius: 10px;
+    margin-inline: 60px;
+    padding-inline: 40px;
+}
+
+#no-products {
+    font-size: 1.15rem;
+}
+
+.product {
+    display: list-item;
+    margin-block-end: 1.25rem;
+}
+
+#order-form {
+    border-radius: 10px;
+    padding-inline: 2rem;
+    padding-block: 1rem;
+}
+
+#order-form input {
+    inline-size: 500px;
+    padding-block: .75rem;
+    font-size: 1.15rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-block-end: 1.5rem;
+    transition: border-color 0.3s ease-in-out;
+}
+
+#order-form input:focus {
+    border-color: #007bff;
+    outline: none;
+}
+
+#order-form input:not([type="text"], [type="number"], [type="email"]), #submit-id-update {
+    background-color: #007bff;
+    color: #fff;
+    padding-block: .75rem;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+}
+
+#order-form input:not([type="text"], [type="number"], [type="email"]):hover, #submit-id-update:hover {
+    background-color: #0056b3;
+}
+
+#order-form input:not([type="text"], [type="number"], [type="email"]):active, #submit-id-update:hover {
+    background-color: #04448a;
+    border: none;
+}
+
+#submit-id-delete {
+    background-color: #ff2600 !important;
+}
+
+#submit-id-delete:hover {
+    background-color: #c42307 !important;
+    border: none;
+}
+
+#submit-id-delete:active {
+    background-color: #9b1b04 !important;
+}
