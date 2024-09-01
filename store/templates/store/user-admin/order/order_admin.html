@@ -1,23 +1,25 @@
 {% extends "store/base.html" %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/user-admin/order/order_admin.css' %}">
+{% endblock %}
 
 {% block content %}
-
     {% if messages %}
         {% for message in messages %}
             <p>{{ message }}</p>
         {% endfor %}
     {% endif %}
 
-    
-
     <h1>Orders for {{ store }}</h1>
 
-    <a href="{% url 'store:store_front' store_id=store.pk %}">Add Order &plus;</a>
+    <a href="{% url 'store:store_front' store_id=store.pk %}"><h2>Add Order &plus;</h2></a>
 
     {% if orders %}
-        <section>
+        <section id="orders">
         {% for order in orders %}
-            <a href="{% url 'store:order_admin_modify' pk=order.pk %}">{{ order }}</a>
+            <a class="order" href="{% url 'store:order_admin_modify' pk=order.pk %}">{{ order }}</a>
         {% endfor %}
         </section>
     {% endif %}
