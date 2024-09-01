@@ -1,4 +1,9 @@
 {% extends 'store/base.html' %}
+{% load static %}
+
+{% block stylesheet %}
+    <link rel="stylesheet" href="{% static 'store/user-admin/product/product_admin.css' %}">
+{% endblock %}
 
 {% block content %}
 
@@ -12,8 +17,10 @@
     {% endfor %}
 {% endif %}
 
+<section id="products">
 {% for product in products %}
-    <a href="{% url 'store:product_admin_modify' pk=product.pk %}">{{ product.name }}</a>
+        <a class="product" href="{% url 'store:product_admin_modify' pk=product.pk %}">{{ product.name }}</a>
 {% endfor %}
+</section>
 
 {% endblock %}
