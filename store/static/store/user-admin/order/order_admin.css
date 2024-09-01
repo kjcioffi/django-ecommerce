@@ -1,3 +1,17 @@
+#orders {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    justify-items: center;
+    align-items: center;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    box-shadow: 0 4px 16px rgb(0, 0, 0, .4);
+}
+
+.order {
+    margin-block: 2rem;
+}
+
 #order-panel {
     display: grid;
     grid-template-columns: 1fr 1fr;
