@@ -47,6 +47,7 @@ class OrderForm(forms.ModelForm):
             Submit("place-order", "Place Order", id="place-order"),
         )
 
+
 class ProductAdminForm(forms.ModelForm):
     class Meta:
         model = Product
