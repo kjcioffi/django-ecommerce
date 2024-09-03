@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <link rel="stylesheet" href="{% static 'store/base.css' %}">
+        {% block stylesheet %}{% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>ContempoCrafts - {% block authtype %}{% endblock %}</title>
+    </head>
+    <body>
+        {% block body %}
+        <nav class="menu">
+            <a class="navlink" href="{% url 'store:store_list' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
+            <aside>ContempoCrafts</aside>
+            <a href="{% url 'store:store_list' %}">About Us</a>
+            <section id="bag">
+                <a class="navlink" href="{% url 'store:checkout' %}"><img id="bag-icon" src="{% static 'store/images/shopping_bag.png' %}"></a>
+                <p class="bag-quantity">{{ total_items }}</p>
+            </section>
+
+            {% if request.user.is_authenticated %}
+                {% if request.user.store_set.first %}
+                    <section class="dropdown">
+                        <button class="dropbtn navbtn">Admin
+                            <i class="fa fa-caret-down"></i>
+                        </button>
+                        <div class="dropdown-content">
+                            <h4>Store Management</h4>
+                            <a class="navlink" href="{% url 'store:product_admin' %}">Manage Products</a>
+                            <a class="navlink" href="{% url 'store:order_admin' %}">Manage Orders</a>
+                            <h4>Customer Reports</h4>
+                            <a class="navlink" href="{% url 'store:download_customer_report' %}">CSV</a>
+                            <a class="navlink" href="{% url 'store:download_customer_pdf_report' %}">PDF</a>
+                            <h4>Product Reports</h4>
+                            <a class="navlink" href="{% url 'store:download_product_report' %}">CSV</a>
+                            <a class="navlink" href="{% url 'store:download_product_pdf_report' %}">PDF</a>
+                            <h4>Sales Reports</h4>
+                            <a class="navlink" href="{% url 'store:download_sales_report' %}">CSV</a>
+                            <a class="navlink" href="{% url 'store:download_sales_pdf_report' %}">PDF</a>
+                        </div>
+                    </section>
+                {% else %} {% comment "logic to create a store" %}{% endcomment %}
+                    <form method="POST">
+                        {% csrf_token %}
+                        <a href="{% url 'store:create_store' %}">Create Store</a>
+                    </form>
+                {% endif %}
+            {% endif %}
+        </nav>
+        {% block content %}{% endblock %}
+        {% block scripts %}{% endblock %}
+        {% endblock %}
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    </body>
+</html>
