@@ -26,6 +26,7 @@ environ.Env.read_env(os.path.join(BASE_DIR, ".env"))
 INSTALLED_APPS = [
     # custom
     "store",
+    "authentication",
     # third party
     "allauth",
     "allauth.account",
