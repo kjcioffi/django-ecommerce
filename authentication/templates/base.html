@@ -8,7 +8,6 @@
         <title>ContempoCrafts - {% block authtype %}{% endblock %}</title>
     </head>
     <body>
-        {% block body %}
         <nav class="menu">
             <a class="navlink" href="{% url 'store:store_list' %}"><img id="logo" src="{% static 'store/images/logo.png' %}"></a>
             <aside>ContempoCrafts</aside>
@@ -49,7 +48,6 @@
         </nav>
         {% block content %}{% endblock %}
         {% block scripts %}{% endblock %}
-        {% endblock %}
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     </body>
 </html>
